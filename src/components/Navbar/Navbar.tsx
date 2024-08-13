@@ -8,7 +8,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const isDesktop = useMediaQuery("(min-width:1200px)");
   return (
-    <div className="flex justify-between text-xl  items-center w-screen">
+    <div className="flex justify-around text-xl  items-center w-full">
       <img
         src={Logo}
         alt="LCE Logo"
@@ -16,7 +16,7 @@ const Navbar = () => {
         onClick={() => {
           navigate("/");
         }}
-        className="w-[160px] h-[70px] m-8 "
+        className="w-[12vw] h-[11vh] m-8 "
       />
 
       <div className="flex font-semibold gap-x-12 pl-10 text-blue">
