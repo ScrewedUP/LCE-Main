@@ -20,7 +20,7 @@ const Navbar = () => {
           isDesktop ? "w-[30vw] h-[21vh]" : "w-[12vw] h-[11vh]"
         }`}
       />
-
+      {/* Dummy */}
       <div className="flex font-semibold gap-x-12 pl-10 text-blue">
         {data.map((data) => (
           <div>
