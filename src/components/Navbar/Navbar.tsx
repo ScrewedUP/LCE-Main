@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import useMediaQuery from "../../hooks/useMediaQuery";
 const Navbar = () => {
   const navigate = useNavigate();
-  const isDesktop = useMediaQuery("(min-width:1200px)");
+  const isDesktop = useMediaQuery("(max-width:800px)");
   return (
     <div className="flex justify-around text-xl  items-center w-full">
       <img
@@ -16,7 +16,9 @@ const Navbar = () => {
         onClick={() => {
           navigate("/");
         }}
-        className="w-[12vw] h-[11vh] m-8 "
+        className={`m-2 ${
+          isDesktop ? "w-[30vw] h-[21vh]" : "w-[12vw] h-[11vh]"
+        }`}
       />
 
       <div className="flex font-semibold gap-x-12 pl-10 text-blue">
