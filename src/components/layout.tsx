@@ -3,8 +3,8 @@ import Navbar from "./Navbar/Navbar";
 
 function Layout() {
   return (
-    <div>
-      <header className="w-full">
+    <div className="bg-black">
+      <header className="w-full ">
         <Navbar />
       </header>
       <main>

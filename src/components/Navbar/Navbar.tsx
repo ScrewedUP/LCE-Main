@@ -25,9 +25,9 @@ const Navbar = () => {
               isMobile ? "w-[50vw] h-[21vh]" : "w-[15vw] h-[15vh]"
             }`}
           />
-          <div className="flex font-semibold text-blue">
+          <div className="flex font-semibold text-muted-foreground">
             {data.map((data) => (
-              <div className="mr-8" key={Math.random()}>
+              <div className="mr-5 text-lg" key={Math.random()}>
                 {data.title === "About" && data.title}
                 {data.title !== "About" && (
                   <Link title={data.title} to={data.route}>
@@ -37,8 +37,8 @@ const Navbar = () => {
               </div>
             ))}
           </div>
-          <div className="flex ">
-            <Button variant="ghost" className="text-outlinedButtoncolor">
+          <div className="flex">
+            <Button variant="ghost" className="text-outlinedButtoncolor  mr-2">
               Login
             </Button>
             <Button className="bg-gradient-to-r from-orange-500 to-orange-400 ">
