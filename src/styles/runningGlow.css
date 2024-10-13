@@ -18,19 +18,10 @@
   right: 0;
   bottom: 0;
   z-index: -1;
-  background: linear-gradient(
-    90deg,
-    red,
-    orange,
-    yellow,
-    green,
-    blue,
-    indigo,
-    violet
-  );
+  background: linear-gradient(90deg, red, orange, blue);
   border-radius: 8px;
   padding: 2px;
-  animation: border-animation 4s linear infinite;
+  animation: border-animation 6s ease infinite;
   background-size: 300%;
 }
 

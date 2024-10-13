@@ -27,7 +27,7 @@ const Navbar = () => {
           />
           <div className="flex font-semibold text-muted-foreground">
             {data.map((data) => (
-              <div className="mr-5 text-lg" key={Math.random()}>
+              <div className="mr-6 text-lg" key={Math.random()}>
                 {data.title === "About" && data.title}
                 {data.title !== "About" && (
                   <Link title={data.title} to={data.route}>
