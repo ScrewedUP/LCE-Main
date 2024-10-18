@@ -28,7 +28,7 @@ const MobileNav = () => {
           <img
             src="hamburger.svg"
             alt="hamburger icon"
-            className="mr-4 cursor-pointer bg-orange-500 h-[10vh] w-[18vw]"
+            className="mr-4 cursor-pointer bg-black h-[5%] w-[10%]"
           />
         </SheetTrigger>
         <SheetContent side="left" className="border-blue bg-white">
