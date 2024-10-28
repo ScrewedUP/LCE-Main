@@ -5,6 +5,7 @@ import {
   Programs,
   Portfolio,
   CommunityPage,
+  Register,
 } from "./Pages/index.tsx";
 import Layout from "./components/layout.tsx";
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="/programs" element={<Programs />} />
           <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/community" element={<CommunityPage />} />
+          <Route path="/register" element={<Register />} />
         </Route>
       </Routes>
     </BrowserRouter>
