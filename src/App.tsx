@@ -8,12 +8,14 @@ import {
   Register,
 } from "./Pages/index.tsx";
 import Layout from "./components/layout.tsx";
+import Aboutus from "./Pages/Aboutus.tsx";
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
+          <Route path="/aboutus" element={<Aboutus />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/programs" element={<Programs />} />
           <Route path="/portfolio" element={<Portfolio />} />

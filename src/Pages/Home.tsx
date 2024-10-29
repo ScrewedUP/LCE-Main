@@ -34,8 +34,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import Navbar from "../components/Navbar/Navbar";
-import "../styles/runningGlow.css";
 
 const Testimonial = ({
   text,
@@ -85,9 +83,7 @@ export default function Component() {
   ];
 
   return (
-    <div className="min-h-screen font-medium text-lg">
-      <Navbar />
-
+    <div className="h-screen font-medium text-lg">
       {/* Hero Section */}
       <section className="relative pt-24 lg:pt-60 pb-20 lg:pb-32  text-black">
         <div className="absolute inset-0 grid grid-cols-[repeat(20,_minmax(0,_1fr))] grid-rows-[repeat(20,_minmax(0,_1fr))] opacity-50 pointer-events-none ">
@@ -115,7 +111,7 @@ export default function Component() {
               <div className="mt-4 text-center">
                 <Button
                   variant="secondary"
-                  className="font-poppins font-semibold bg-black hover:bg-white hover:text-black hover:scale-200 text-white text-sm sm:text-base md:text-lg px-4 py-2 md:px-6 md:py-3"
+                  className="font-poppins font-semibold  bg-black hover:bg-white hover:text-black hover:scale-110 text-white  hover:border-black hover:border-2 text-sm sm:text-base md:text-lg px-4 py-2 md:px-6 md:py-3"
                 >
                   Apply Now
                 </Button>

@@ -18,38 +18,35 @@ const Navbar = () => {
 
   const navItems = [
     {
-      title: "Home",
-      icon: <Home className="w-5 h-5 mr-2" />,
+      title: "About",
+      href: "/aboutus",
+      icon: <Users className="w-5 h-5 mr-2" />,
       items: [
         {
-          title: "Overview",
-          href: "/#overview",
+          title: "About Us",
+          href: "/aboutus",
           icon: <Home className="w-4 h-4 mr-2" />,
         },
         {
-          title: "Features",
-          href: "/#features",
+          title: "What do we offer",
+          href: "/offer",
           icon: <BookOpen className="w-4 h-4 mr-2" />,
         },
         {
-          title: "Testimonials",
-          href: "/#testimonials",
+          title: "Alumni",
+          href: "/alumni",
+          icon: <Users className="w-4 h-4 mr-2" />,
+        },
+        {
+          title: "Team",
+          href: "/team",
           icon: <Users className="w-4 h-4 mr-2" />,
         },
       ],
     },
     {
-      title: "About",
-      href: "/about",
-      icon: <Users className="w-5 h-5 mr-2" />,
-    },
-    {
-      title: "Services",
-      href: "/services",
-      icon: <BookOpen className="w-5 h-5 mr-2" />,
-    },
-    {
       title: "Events",
+      href: "/events",
       icon: <Calendar className="w-5 h-5 mr-2" />,
       items: [
         {
@@ -70,8 +67,19 @@ const Navbar = () => {
       ],
     },
     {
-      title: "Contact",
-      href: "/contact",
+      title: "Programs",
+      href: "/programs",
+      icon: <Users className="w-5 h-5 mr-2" />,
+    },
+    {
+      title: "Portfolio",
+      href: "/portfolio",
+      icon: <BookOpen className="w-5 h-5 mr-2" />,
+    },
+
+    {
+      title: "Community",
+      href: "/community",
       icon: <Mail className="w-5 h-5 mr-2" />,
     },
   ];
@@ -94,31 +102,36 @@ const Navbar = () => {
                   <NavigationMenuItem key={item.title}>
                     {item.items ? (
                       <>
-                        <NavigationMenuTrigger className="text-gray-800">
-                          <span className="flex items-center">
-                            {item.icon}
-                            {item.title}
-                          </span>
-                        </NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                          <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                            {item.items.map((subItem) => (
-                              <li key={subItem.title}>
-                                <NavigationMenuLink asChild>
-                                  <Link
-                                    to={subItem.href || "/"}
-                                    className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                                  >
-                                    <div className="flex items-center text-sm font-medium leading-none">
-                                      {subItem.icon}
-                                      <span>{subItem.title}</span>
-                                    </div>
-                                  </Link>
-                                </NavigationMenuLink>
-                              </li>
-                            ))}
-                          </ul>
-                        </NavigationMenuContent>
+                        <Link
+                          to={item.href || "/"}
+                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        >
+                          <NavigationMenuTrigger className="text-gray-800">
+                            <span className="flex items-center">
+                              {item.icon}
+                              {item.title}
+                            </span>
+                          </NavigationMenuTrigger>
+                          <NavigationMenuContent>
+                            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                              {item.items.map((subItem) => (
+                                <li key={subItem.title}>
+                                  <NavigationMenuLink asChild>
+                                    <Link
+                                      to={subItem.href || "/"}
+                                      className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                                    >
+                                      <div className="flex items-center text-sm font-medium leading-none">
+                                        {subItem.icon}
+                                        <span>{subItem.title}</span>
+                                      </div>
+                                    </Link>
+                                  </NavigationMenuLink>
+                                </li>
+                              ))}
+                            </ul>
+                          </NavigationMenuContent>
+                        </Link>
                       </>
                     ) : (
                       <Link to={item.href || "/"}>
@@ -142,7 +155,7 @@ const Navbar = () => {
               Login
             </Button>
             <Button
-              className="bg-white text-black hover:bg-cyan-700 transition-all duration-300"
+              className=" text-white hover:bg-cyan-700 transition-all duration-300"
               variant="default"
             >
               Apply Now
