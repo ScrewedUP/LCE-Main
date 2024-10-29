@@ -6,9 +6,9 @@ import { Button } from "../ui/button";
 import useMediaQuery from "../../hooks/useMediaQuery";
 const Navbar = () => {
   const navigate = useNavigate();
-  const isDesktop = useMediaQuery("(min-width:1200px)");
+  const isDesktop = useMediaQuery("(max-width:800px)");
   return (
-    <div className="flex justify-between text-xl  items-center w-screen">
+    <div className="flex justify-around text-xl  items-center w-full">
       <img
         src={Logo}
         alt="LCE Logo"
@@ -16,7 +16,9 @@ const Navbar = () => {
         onClick={() => {
           navigate("/");
         }}
-        className="w-[160px] h-[70px] m-8 "
+        className={`m-2 ${
+          isDesktop ? "w-[30vw] h-[21vh]" : "w-[12vw] h-[11vh]"
+        }`}
       />
 
       <div className="flex font-semibold gap-x-12 pl-10 text-blue">
@@ -31,15 +33,12 @@ const Navbar = () => {
           </div>
         ))}
       </div>
-      <div className="flex pr-8 gap-x-3">
-        <Button
-          variant="outline"
-          className="border-orange-500 border-2 text-outlinedButtoncolor w-[6vw] "
-        >
-          Apply Now
+      <div className="flex pr-8 gap-x-2">
+        <Button variant="ghost" className="text-outlinedButtoncolor w-[6vw]">
+          Login
         </Button>
         <Button className="bg-gradient-to-r from-orange-500 to-orange-400 w-[4.5vw]">
-          Login
+          Sign Up
         </Button>
       </div>
     </div>
