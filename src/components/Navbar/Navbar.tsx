@@ -1,6 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Home, Calendar, Users, BookOpen, Mail, Menu, X } from "lucide-react";
+import {
+  Home,
+  Calendar,
+  Users,
+  BookOpen,
+  Mail,
+  Menu,
+  X,
+  LogOut,
+  LayoutDashboard,
+} from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -10,11 +21,27 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { useAuth } from "../../auth/AuthProvider";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isAuthenticated, isAdmin, isStartup, email, logout } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, [location.pathname]);
 
   const navItems = [
     {
@@ -51,7 +78,7 @@ const Navbar = () => {
       items: [
         {
           title: "Upcoming",
-          href: "/events/upcoming",
+          href: "/events",
           icon: <Calendar className="w-4 h-4 mr-2" />,
         },
         {
@@ -76,7 +103,6 @@ const Navbar = () => {
       href: "/portfolio",
       icon: <BookOpen className="w-5 h-5 mr-2" />,
     },
-
     {
       title: "Community",
       href: "/community",
@@ -84,15 +110,19 @@ const Navbar = () => {
     },
   ];
 
+  const handleLogout = () => {
+    setIsLoading(true);
+    logout();
+    navigate("/login");
+  };
+
   return (
-    <nav
-      className={`fixed w-full z-50 transition-all duration-300 bg-white shadow-md`}
-    >
+    <nav className="fixed w-screen z-50 transition-all duration-300 bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center">
             <Link to="/" className="flex-shrink-0">
-              <img className="h-15 w-auto" src="/LCE.svg" alt="LCE Logo" />
+              <img className="h-15 w-[90%]" src="/LCE.svg" alt="LCE Logo" />
             </Link>
           </div>
           <div className="hidden md:block">
@@ -102,36 +132,31 @@ const Navbar = () => {
                   <NavigationMenuItem key={item.title}>
                     {item.items ? (
                       <>
-                        <Link
-                          to={item.href || "/"}
-                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                        >
-                          <NavigationMenuTrigger className="text-gray-800">
-                            <span className="flex items-center">
-                              {item.icon}
-                              {item.title}
-                            </span>
-                          </NavigationMenuTrigger>
-                          <NavigationMenuContent>
-                            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                              {item.items.map((subItem) => (
-                                <li key={subItem.title}>
-                                  <NavigationMenuLink asChild>
-                                    <Link
-                                      to={subItem.href || "/"}
-                                      className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                                    >
-                                      <div className="flex items-center text-sm font-medium leading-none">
-                                        {subItem.icon}
-                                        <span>{subItem.title}</span>
-                                      </div>
-                                    </Link>
-                                  </NavigationMenuLink>
-                                </li>
-                              ))}
-                            </ul>
-                          </NavigationMenuContent>
-                        </Link>
+                        <NavigationMenuTrigger className="text-gray-800">
+                          <span className="flex items-center">
+                            {item.icon}
+                            {item.title}
+                          </span>
+                        </NavigationMenuTrigger>
+                        <NavigationMenuContent>
+                          <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                            {item.items.map((subItem) => (
+                              <li key={subItem.title}>
+                                <NavigationMenuLink asChild>
+                                  <Link
+                                    to={subItem.href || "/"}
+                                    className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                                  >
+                                    <div className="flex items-center text-sm font-medium leading-none">
+                                      {subItem.icon}
+                                      <span>{subItem.title}</span>
+                                    </div>
+                                  </Link>
+                                </NavigationMenuLink>
+                              </li>
+                            ))}
+                          </ul>
+                        </NavigationMenuContent>
                       </>
                     ) : (
                       <Link to={item.href || "/"}>
@@ -151,11 +176,51 @@ const Navbar = () => {
             </NavigationMenu>
           </div>
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" className="text-gray-800 hover:text-cyan">
-              Login
-            </Button>
+            {isLoading ? (
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900"></div>
+            ) : isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="focus:outline-none">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-black text-white">
+                      {email[0].toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {isAdmin && (
+                    <DropdownMenuItem
+                      onClick={() => navigate("/admindashboard")}
+                    >
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      <span>Admin Dashboard</span>
+                    </DropdownMenuItem>
+                  )}
+                  {isStartup && (
+                    <DropdownMenuItem
+                      onClick={() => navigate("/startupdashboard")}
+                    >
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      <span>Startup Dashboard</span>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button
+                variant="secondary"
+                className="text-gray-800 hover:text-cyan"
+                onClick={() => navigate("/login")}
+              >
+                Login
+              </Button>
+            )}
             <Button
-              className=" text-white hover:bg-cyan-700 transition-all duration-300"
+              className="text-white bg-black hover:bg-cyan-700 transition-all duration-300"
               variant="default"
             >
               Apply Now
@@ -214,20 +279,66 @@ const Navbar = () => {
         </div>
         <div className="pt-4 pb-3 border-t border-gray-200">
           <div className="flex items-center px-5">
-            <Button
-              variant="ghost"
-              className="text-gray-700 hover:text-cyan mr-2 w-full justify-start"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Login
-            </Button>
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="focus:outline-none">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-cyan-600 text-white">
+                      {email[0].toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {isAdmin && (
+                    <DropdownMenuItem
+                      onClick={() => {
+                        navigate("/admindashboard");
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      Admin Dashboard
+                    </DropdownMenuItem>
+                  )}
+                  {isStartup && (
+                    <DropdownMenuItem
+                      onClick={() => {
+                        navigate("/startupdashboard");
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      Startup Dashboard
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem
+                    onClick={() => {
+                      handleLogout();
+                      setIsMobileMenuOpen(false);
+                    }}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button
+                variant="ghost"
+                className="text-gray-700 hover:text-cyan mr-2 w-full justify-start"
+                onClick={() => {
+                  navigate("/login");
+                  setIsMobileMenuOpen(false);
+                }}
+              >
+                Login
+              </Button>
+            )}
           </div>
           <div className="mt-3 px-2">
             <Button
               className="bg-cyan-600 text-white hover:bg-cyan-700 transition-colors duration-300 w-full"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Sign Up
+              Apply Now
             </Button>
           </div>
         </div>

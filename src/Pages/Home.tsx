@@ -85,7 +85,7 @@ export default function Component() {
   return (
     <div className="h-screen font-medium text-lg">
       {/* Hero Section */}
-      <section className="relative pt-24 lg:pt-60 pb-20 lg:pb-32  text-black">
+      <section className="relative pt-52 lg:pt-60 pb-20 lg:pb-32  text-black">
         <div className="absolute inset-0 grid grid-cols-[repeat(20,_minmax(0,_1fr))] grid-rows-[repeat(20,_minmax(0,_1fr))] opacity-50 pointer-events-none ">
           {Array.from({ length: 400 }).map((_, i) => (
             <div key={i} className="border-[0.5px] border-gray-200"></div>
@@ -285,7 +285,7 @@ export default function Component() {
             Our Services Timeline
           </h2>
           <div className="relative">
-            <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-indigo-300 to-purple-800"></div>
+            <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-indigo-300 to-purple-800"></div>
             {[
               {
                 title: "Idea Validation",
@@ -326,17 +326,17 @@ export default function Component() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
                 <div
-                  className={`flex items-center ${
-                    index % 2 === 0 ? "flex-row-reverse" : ""
+                  className={`flex flex-col md:flex-row ${
+                    index % 2 === 0 ? "md:flex-row-reverse" : ""
                   }`}
                 >
-                  <div className="w-5/12"></div>
-                  <div className="w-2/12 flex justify-center">
+                  <div className="w-full md:w-5/12"></div>
+                  <div className="w-full md:w-2/12 flex justify-center mb-4 md:mb-0">
                     <div className="w-12 h-12 bg-gradient-to-br from-indigo-400 to-purple-800 rounded-full flex items-center justify-center text-white text-2xl font-bold">
                       {index + 1}
                     </div>
                   </div>
-                  <div className="w-5/12">
+                  <div className="w-full md:w-5/12">
                     <div className="p-6 rounded shadow-lg border border-orange-200">
                       <div className="flex items-center mb-4">
                         <div className="mr-4 text-purple-500">
