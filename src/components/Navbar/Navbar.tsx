@@ -34,7 +34,7 @@ const Navbar = () => {
       <div className="flex pr-8 gap-x-3">
         <Button
           variant="outline"
-          className="border-orange-500 border-2 text-outlinedButtoncolor w-[6vw]"
+          className="border-orange-500 border-2 text-outlinedButtoncolor w-[6vw] "
         >
           Apply Now
         </Button>
