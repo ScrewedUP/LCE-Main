@@ -85,8 +85,8 @@ export default function Component() {
   return (
     <div className="h-screen font-medium text-lg">
       {/* Hero Section */}
-      <section className="relative pt-52 lg:pt-60 pb-20 lg:pb-32  text-black">
-        <div className="absolute inset-0 grid grid-cols-[repeat(20,_minmax(0,_1fr))] grid-rows-[repeat(20,_minmax(0,_1fr))] opacity-50 pointer-events-none ">
+      <section className="pt-52 lg:pt-60 pb-20 lg:pb-32 text-black">
+        <div className="absolute lg:inset-0 lg:grid lg:grid-cols-[repeat(20,_minmax(0,_1fr))] grid-rows-[repeat(20,_minmax(0,_1fr))] opacity-50 pointer-events-none ">
           {Array.from({ length: 400 }).map((_, i) => (
             <div key={i} className="border-[0.5px] border-gray-200"></div>
           ))}
@@ -505,7 +505,7 @@ export default function Component() {
       <section className="py-16 md:py-24 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 md:mb-16">
-            Our Partners and Sponsors
+            Incubated Startups
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
