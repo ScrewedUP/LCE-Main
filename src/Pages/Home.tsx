@@ -85,7 +85,7 @@ export default function Component() {
   return (
     <div className="h-screen font-medium text-lg">
       {/* Hero Section */}
-      <section className="pt-52 lg:pt-60 pb-20 lg:pb-32 text-black">
+      <section className="relative pt-52 lg:pt-60 pb-20 lg:pb-32 text-black">
         <div className="absolute lg:inset-0 lg:grid lg:grid-cols-[repeat(20,_minmax(0,_1fr))] grid-rows-[repeat(20,_minmax(0,_1fr))] opacity-50 pointer-events-none ">
           {Array.from({ length: 400 }).map((_, i) => (
             <div key={i} className="border-[0.5px] border-gray-200"></div>
