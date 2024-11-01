@@ -454,8 +454,8 @@ function EventsView({
             </CardContent>
             <CardFooter>
               <Button
-                className="w-full bg-purple-600"
-                variant="default"
+                className="w-full"
+                variant="outline"
                 onClick={() => onShowRegistrations(event)}
               >
                 Show Registrations
