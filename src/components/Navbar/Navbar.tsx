@@ -222,6 +222,9 @@ const Navbar = () => {
             <Button
               className="text-white bg-black hover:bg-cyan-700 transition-all duration-300"
               variant="default"
+              onClick={() => {
+                navigate("/register");
+              }}
             >
               Apply Now
             </Button>
@@ -336,7 +339,10 @@ const Navbar = () => {
           <div className="mt-3 px-2">
             <Button
               className="bg-cyan-600 text-white hover:bg-cyan-700 transition-colors duration-300 w-full"
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={() => {
+                navigate("/register");
+                setIsMobileMenuOpen(false);
+              }}
             >
               Apply Now
             </Button>

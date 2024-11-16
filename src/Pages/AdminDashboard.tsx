@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { format } from "date-fns";
 import {
@@ -15,6 +17,9 @@ import {
   Users,
   Menu,
   X,
+  Check,
+  AlertTriangle,
+  Loader2,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -53,6 +58,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/auth/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
 type Event = {
   id: string;
@@ -145,6 +151,31 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleEditEvent = async (
+    eventId: string,
+    eventData: Omit<Event, "id">
+  ) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/events/update/${eventId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(eventData),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to update event");
+      }
+      fetchEvents(); // Refresh the events list
+    } catch (error) {
+      console.error("Error updating event:", error);
+      throw new Error("Failed to update event. Please try again later.");
+    }
+  };
+
   return (
     <div className="flex min-h-screen w-full bg-gray-50">
       <AppSidebar
@@ -170,6 +201,7 @@ export default function AdminDashboard() {
               events={events}
               onShowRegistrations={handleShowRegistrations}
               onAddEvent={handleAddEvent}
+              onEditEvent={handleEditEvent}
             />
           )}
           {activeSection === "events" && selectedEvent && (
@@ -310,10 +342,12 @@ function EventsView({
   events,
   onShowRegistrations,
   onAddEvent,
+  onEditEvent,
 }: {
   events: Event[];
   onShowRegistrations: (event: Event) => void;
   onAddEvent: (eventData: Omit<Event, "id">) => void;
+  onEditEvent: (eventId: string, eventData: Omit<Event, "id">) => void;
 }) {
   const [newEvent, setNewEvent] = React.useState({
     name: "",
@@ -321,19 +355,61 @@ function EventsView({
     description: "",
     posterLink: "",
   });
+  const [editingEvent, setEditingEvent] = React.useState<Event | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
+  const [isUpdating, setIsUpdating] = React.useState(false);
+  const [updateStatus, setUpdateStatus] = React.useState<
+    "success" | "error" | null
+  >(null);
+  const [isFormChanged, setIsFormChanged] = React.useState(false);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setNewEvent((prev) => ({ ...prev, [name]: value }));
+    if (editingEvent) {
+      setEditingEvent({ ...editingEvent, [name]: value });
+      setIsFormChanged(true);
+    } else {
+      setNewEvent((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onAddEvent(newEvent);
-    // Reset form
-    setNewEvent({ name: "", date: "", description: "", posterLink: "" });
+    if (editingEvent) {
+      handleUpdate();
+    } else {
+      onAddEvent(newEvent);
+      setNewEvent({ name: "", date: "", description: "", posterLink: "" });
+    }
+  };
+
+  const handleEditClick = (event: Event) => {
+    setEditingEvent(event);
+    setIsEditDialogOpen(true);
+    setIsFormChanged(false);
+  };
+
+  const handleUpdate = async () => {
+    if (!editingEvent) return;
+
+    setIsUpdating(true);
+    try {
+      await onEditEvent(editingEvent.id, {
+        name: editingEvent.name,
+        posterLink: editingEvent.posterLink,
+        date: editingEvent.date,
+        description: editingEvent.description,
+      });
+      setUpdateStatus("success");
+    } catch (error) {
+      console.error("Error updating event:", error);
+      setUpdateStatus("error");
+    } finally {
+      setIsUpdating(false);
+      setIsEditDialogOpen(false);
+    }
   };
 
   return (
@@ -429,7 +505,7 @@ function EventsView({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleEditClick(event)}>
                       <Pencil className="mr-2 h-4 w-4" />
                       Edit
                     </DropdownMenuItem>
@@ -464,6 +540,111 @@ function EventsView({
           </Card>
         ))}
       </div>
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Event</DialogTitle>
+            <DialogDescription>
+              Update the event details in the form below.
+            </DialogDescription>
+          </DialogHeader>
+          {editingEvent && (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-name">Event Name</Label>
+                <Input
+                  id="edit-name"
+                  name="name"
+                  value={editingEvent.name}
+                  onChange={handleInputChange}
+                  placeholder="Enter event name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-date">Event Date</Label>
+                <Input
+                  id="edit-date"
+                  name="date"
+                  type="datetime-local"
+                  value={editingEvent.date}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-description">Description</Label>
+                <Textarea
+                  id="edit-description"
+                  name="description"
+                  value={editingEvent.description}
+                  onChange={handleInputChange}
+                  placeholder="Enter event description"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-posterLink">Poster Link</Label>
+                <Input
+                  id="edit-posterLink"
+                  name="posterLink"
+                  value={editingEvent.posterLink}
+                  onChange={handleInputChange}
+                  placeholder="Enter poster link"
+                />
+              </div>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={!isFormChanged || isUpdating}
+              >
+                {isUpdating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Updating...
+                  </>
+                ) : (
+                  "Update Event"
+                )}
+              </Button>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
+      <AnimatePresence>
+        {updateStatus && (
+          <Dialog open={true} onOpenChange={() => setUpdateStatus(null)}>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>
+                  {updateStatus === "success" ? "Success" : "Error"}
+                </DialogTitle>
+              </DialogHeader>
+              <div className="flex items-center justify-center p-6">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {updateStatus === "success" ? (
+                    <div className="rounded-full bg-green-100 p-3">
+                      <Check className="h-8 w-8 text-green-600" />
+                    </div>
+                  ) : (
+                    <div className="rounded-full bg-red-100 p-3">
+                      <AlertTriangle className="h-8 w-8 text-red-600" />
+                    </div>
+                  )}
+                </motion.div>
+              </div>
+              <p className="text-center">
+                {updateStatus === "success"
+                  ? "Event updated successfully!"
+                  : "Failed to update event. Please try again."}
+              </p>
+              <Button onClick={() => setUpdateStatus(null)}>Close</Button>
+            </DialogContent>
+          </Dialog>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -509,7 +690,7 @@ function RegistrationsView({
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Phone Number</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                {/* <TableHead className="text-right">Actions</TableHead> */}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -519,7 +700,7 @@ function RegistrationsView({
                     <TableCell>{registration.name}</TableCell>
                     <TableCell>{registration.email}</TableCell>
                     <TableCell>{registration.number}</TableCell>
-                    <TableCell className="text-right">
+                    {/* <TableCell className="text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="sm">
@@ -533,7 +714,7 @@ function RegistrationsView({
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                 ))
               ) : (

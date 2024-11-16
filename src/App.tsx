@@ -4,7 +4,6 @@ import {
   EventsPage,
   Programs,
   Portfolio,
-  CommunityPage,
   Register,
   Login,
 } from "./Pages/index.tsx";
@@ -13,10 +12,16 @@ import Aboutus from "./Pages/Aboutus.tsx";
 import { AuthProvider, useAuth } from "./auth/AuthProvider.tsx";
 import AdminDashboard from "./Pages/AdminDashboard.tsx";
 import StartupDashboard from "./Pages/StartupDashboard.tsx";
+import BlogList from "./Pages/Blog.tsx";
+import BlogPost from "./components/blogPost.tsx";
+import { allPosts } from "content-collections";
+import { useParams } from "react-router-dom";
+
 interface ProtectedRouteProps {
   children: React.ReactNode;
   allowedRoles: string[];
 }
+
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
   allowedRoles,
@@ -35,7 +40,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to="/" replace />;
   }
 
-  return children;
+  return <>{children}</>;
 };
 
 function App() {
@@ -65,14 +70,26 @@ function App() {
             />
             <Route path="/programs" element={<Programs />} />
             <Route path="/portfolio" element={<Portfolio />} />
-            <Route path="/community" element={<CommunityPage />} />
+            <Route path="/community" element={<BlogList />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/blog/:slug" element={<BlogPostWrapper />} />
           </Route>
         </Routes>
       </BrowserRouter>
     </AuthProvider>
   );
+}
+
+function BlogPostWrapper() {
+  const { slug } = useParams<{ slug: string }>();
+  const post = allPosts.find((p) => p.slug === slug);
+
+  if (!post) {
+    return <div>Post not found</div>;
+  }
+
+  return <BlogPost post={post} />;
 }
 
 export default App;

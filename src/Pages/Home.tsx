@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import {
   ChevronRight,
   Mail,
@@ -673,7 +673,7 @@ export default function Component() {
                 {["About", "Services", "Events", "Contact"].map((link) => (
                   <li key={link}>
                     <Link
-                      to="#"
+                      to=""
                       className="text-gray-400 hover:text-white transition-colors duration-300 flex items-center text-lg"
                     >
                       <ChevronRight className="w-5 h-5 mr-2" />

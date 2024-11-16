@@ -1,599 +1,933 @@
-import React, { useState } from "react";
-import { ChevronLeft, ChevronRight, Upload } from "lucide-react";
+import { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { ArrowLeft, Check, X } from "lucide-react";
 
-type FormData = {
-  startupName: string;
-  industry: string;
-  sector: string;
-  categories: string;
-  natureOfEntity: string;
-  brandName: string;
-  entityRegistrationStatus: string;
-  innovationModel: string;
-  teamSize: string;
-  incubationStatus: string;
-  currentStage: string;
-  fundingStatus: string;
-  startupIndiaRegistration: string;
-  businessDescription: string;
-  incorporationNumber: string;
-  incorporationDate: string;
-  incorporationCertificate: File | null;
-  tanGst: string;
-  iprApplication: string;
-  addressLine1: string;
-  addressLine2: string;
-  state: string;
-  city: string;
-  district: string;
-  pinCode: string;
-  founderName: string;
-  designation: string;
-  mobileNumber: string;
-  founderAddress: string;
-  panNumber: string;
-  aadharNumber: string;
-  dippNumber: string;
-  equity: number | null;
-  publishProfile: string;
-  pitchDeck: File | null;
-  logo: File | null;
-  termsAccepted: boolean;
+const sectors = [
+  "Agriculture",
+  "Automotive",
+  "Education",
+  "Energy",
+  "Finance",
+  "Healthcare",
+  "IT",
+  "Manufacturing",
+  "Retail",
+  "Others",
+];
+const categories = [
+  "B2B",
+  "B2C",
+  "B2B2C",
+  "C2C",
+  "D2C",
+  "Hardware",
+  "SaaS",
+  "Marketplace",
+  "Others",
+];
+const stages = [
+  "Ideation",
+  "Validation",
+  "Early Traction",
+  "Scaling",
+  "Mature",
+];
+const designations = ["CEO", "CTO", "CFO", "COO", "CMO", "Other"];
+const indianStates = [
+  "Andhra Pradesh",
+  "Karnataka",
+  "Maharashtra",
+  "Tamil Nadu",
+  "Telangana",
+  "Uttar Pradesh",
+];
+const citiesByState: { [key: string]: string[] } = {
+  "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur"],
+  Karnataka: ["Bangalore", "Mysore", "Hubli"],
+  Maharashtra: ["Mumbai", "Pune", "Nagpur"],
+  "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai"],
+  Telangana: ["Hyderabad", "Warangal", "Nizamabad"],
+  "Uttar Pradesh": ["Lucknow", "Kanpur", "Agra"],
 };
 
-const initialFormData: FormData = {
-  startupName: "",
-  industry: "",
-  sector: "",
-  categories: "",
-  natureOfEntity: "",
-  brandName: "",
-  entityRegistrationStatus: "",
-  innovationModel: "",
-  teamSize: "",
-  incubationStatus: "",
-  currentStage: "",
-  fundingStatus: "",
-  startupIndiaRegistration: "",
-  businessDescription: "",
-  incorporationNumber: "",
-  incorporationDate: "",
-  incorporationCertificate: null,
-  tanGst: "",
-  iprApplication: "",
-  addressLine1: "",
-  addressLine2: "",
-  state: "",
-  city: "",
-  district: "",
-  pinCode: "",
-  founderName: "",
-  designation: "",
-  mobileNumber: "",
-  founderAddress: "",
-  panNumber: "",
-  aadharNumber: "",
-  dippNumber: "",
-  equity: null,
-  publishProfile: "",
-  pitchDeck: null,
-  logo: null,
-  termsAccepted: false,
-};
+const formSchema = z.object({
+  step1: z.object({
+    name: z.string().min(1),
+    entity_name: z.string().min(1),
+    sector: z.string().min(1),
+    categories: z.string().min(1),
+    year: z.number().int().min(1900).max(new Date().getFullYear()),
+    brand_name: z.string().optional(),
+    entityRegistrationStatus: z.boolean(),
+    stage: z.string().optional(),
+    detailsText: z.string().optional(),
+    size: z.number().int().min(1),
+    incubation_status: z.boolean(),
+    startupIndiaRegister: z.boolean(),
+  }),
+  step2: z.object({
+    reg_number: z.string().min(1),
+    reg_date: z.string().min(1),
+    reg_certificate: z.string().min(1),
+    gst: z.string().min(1),
+    ipr: z.boolean(),
+  }),
+  step3: z.object({
+    addrLine1: z.string().min(1),
+    addLine2: z.string().min(1),
+    state: z.string().min(1),
+    city: z.string().min(1),
+    district: z.string().min(1),
+    pincode: z.number().int().min(100000).max(999999),
+  }),
+  step4: z.object({
+    founderName: z.string().min(1),
+    designation: z.string().min(1),
+    mobile: z.string().min(10),
+    address: z.string().min(1),
+    equity: z.number().int().min(0).max(100),
+    email: z.string().email("Invalid email address"),
+    pitch_deck: z.string().min(1),
+    Aadhar_Number: z.string().length(12),
+    Pan_Number: z.string().length(10),
+    Dipp_number: z.string().min(1),
+  }),
+});
+
+type FormData = z.infer<typeof formSchema>;
 
 export default function Component() {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [step, setStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showFailureModal, setShowFailureModal] = useState(false);
+  const [formData, setFormData] = useState<Partial<FormData>>({
+    step1: {
+      name: "",
+      entity_name: "",
+      sector: "",
+      categories: "",
+      year: new Date().getFullYear(),
+      entityRegistrationStatus: false,
+      size: 1,
+      incubation_status: false,
+      startupIndiaRegister: false,
+      brand_name: "",
+      stage: "",
+      detailsText: "",
+    },
+    step2: {
+      reg_number: "",
+      reg_date: "",
+      reg_certificate: "",
+      gst: "",
+      ipr: false,
+    },
+    step3: {
+      addrLine1: "",
+      addLine2: "",
+      state: "",
+      city: "",
+      district: "",
+      pincode: 100000,
+    },
+    step4: {
+      founderName: "",
+      designation: "",
+      mobile: "",
+      address: "",
+      equity: 0,
+      email: "",
+      pitch_deck: "",
+      Aadhar_Number: "",
+      Pan_Number: "",
+      Dipp_number: "",
+    },
+  });
 
-  const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value, type } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]:
-        type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
-    }));
-  };
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+    setValue,
+    watch,
+  } = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    mode: "onTouched",
+    defaultValues: formData,
+  });
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, files } = e.target;
-    if (files && files[0]) {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: files[0],
-      }));
+  const onSubmit = async (data: FormData) => {
+    setIsSubmitting(true);
+    try {
+      const flattenedData = {
+        ...data.step1,
+        ...data.step2,
+        ...data.step3,
+        ...data.step4,
+        password: "tempPass",
+      };
+
+      const response = await fetch("http://localhost:8080/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(flattenedData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Registration failed");
+      }
+
+      const responseData = await response.json();
+      console.log(responseData);
+
+      setShowSuccessModal(true);
+    } catch (error) {
+      console.error("Registration error:", error);
+      setShowFailureModal(true);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleMultiSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, options } = e.target;
-    const selectedValues = Array.from(options)
-      .filter((option) => option.selected)
-      .map((option) => option.value);
-    setFormData((prev) => ({
-      ...prev,
-      [name]: selectedValues,
+  const handleInputChange = (
+    step: keyof FormData,
+    field: string,
+    value: any
+  ) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [step]: {
+        ...prevData[step],
+        [field]: value,
+      },
     }));
   };
 
-  const handleNext = () => {
-    setCurrentStep((prev) => Math.min(prev + 1, 4));
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="name">Name of Startup *</Label>
+                <Input
+                  id="name"
+                  {...register("step1.name")}
+                  onChange={(e) =>
+                    handleInputChange("step1", "name", e.target.value)
+                  }
+                  value={formData.step1?.name || ""}
+                />
+              </div>
+              <div>
+                <Label htmlFor="entity_name">Entity Name *</Label>
+                <Input
+                  id="entity_name"
+                  {...register("step1.entity_name")}
+                  onChange={(e) =>
+                    handleInputChange("step1", "entity_name", e.target.value)
+                  }
+                  value={formData.step1?.entity_name || ""}
+                />
+              </div>
+              <div>
+                <Label htmlFor="sector">Sector *</Label>
+                <Controller
+                  name="step1.sector"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        handleInputChange("step1", "sector", value);
+                      }}
+                      value={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Sector" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {sectors.map((sector) => (
+                          <SelectItem key={sector} value={sector}>
+                            {sector}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
+              <div>
+                <Label htmlFor="categories">Categories *</Label>
+                <Controller
+                  name="step1.categories"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        handleInputChange("step1", "categories", value);
+                      }}
+                      value={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
+              <div>
+                <Label htmlFor="year">Year of Establishment *</Label>
+                <Input
+                  id="year"
+                  type="number"
+                  {...register("step1.year", { valueAsNumber: true })}
+                  onChange={(e) =>
+                    handleInputChange("step1", "year", parseInt(e.target.value))
+                  }
+                  value={formData.step1?.year || ""}
+                />
+              </div>
+              <div>
+                <Label htmlFor="brand_name">Brand Name</Label>
+                <Input
+                  id="brand_name"
+                  {...register("step1.brand_name")}
+                  onChange={(e) =>
+                    handleInputChange("step1", "brand_name", e.target.value)
+                  }
+                  value={formData.step1?.brand_name || ""}
+                />
+              </div>
+              <div>
+                <Label>Entity Registration Status</Label>
+                <Controller
+                  name="step1.entityRegistrationStatus"
+                  control={control}
+                  render={({ field }) => (
+                    <RadioGroup
+                      onValueChange={(value) => {
+                        const boolValue = value === "true";
+                        field.onChange(boolValue);
+                        handleInputChange(
+                          "step1",
+                          "entityRegistrationStatus",
+                          boolValue
+                        );
+                      }}
+                      value={field.value ? "true" : "false"}
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="true" id="registered" />
+                        <Label htmlFor="registered">Yes</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="false" id="not-registered" />
+                        <Label htmlFor="not-registered">No</Label>
+                      </div>
+                    </RadioGroup>
+                  )}
+                />
+              </div>
+              <div>
+                <Label htmlFor="stage">Current Stage</Label>
+                <Controller
+                  name="step1.stage"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        handleInputChange("step1", "stage", value);
+                      }}
+                      value={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Stage" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {stages.map((stage) => (
+                          <SelectItem key={stage} value={stage}>
+                            {stage}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
+              <div className="col-span-2">
+                <Label htmlFor="detailsText">Details</Label>
+                <Textarea
+                  id="detailsText"
+                  {...register("step1.detailsText")}
+                  onChange={(e) =>
+                    handleInputChange("step1", "detailsText", e.target.value)
+                  }
+                  value={formData.step1?.detailsText || ""}
+                />
+              </div>
+              <div>
+                <Label htmlFor="size">Team Size *</Label>
+                <Input
+                  id="size"
+                  type="number"
+                  {...register("step1.size", { valueAsNumber: true })}
+                  onChange={(e) =>
+                    handleInputChange("step1", "size", parseInt(e.target.value))
+                  }
+                  value={formData.step1?.size || ""}
+                />
+              </div>
+              <div>
+                <Label>Incubation Status</Label>
+                <Controller
+                  name="step1.incubation_status"
+                  control={control}
+                  render={({ field }) => (
+                    <RadioGroup
+                      onValueChange={(value) => {
+                        const boolValue = value === "true";
+                        field.onChange(boolValue);
+                        handleInputChange(
+                          "step1",
+                          "incubation_status",
+                          boolValue
+                        );
+                      }}
+                      value={field.value ? "true" : "false"}
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="true" id="incubated" />
+                        <Label htmlFor="incubated">Yes</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="false" id="not-incubated" />
+                        <Label htmlFor="not-incubated">No</Label>
+                      </div>
+                    </RadioGroup>
+                  )}
+                />
+              </div>
+              <div>
+                <Label>Registered under Startup India Program</Label>
+                <Controller
+                  name="step1.startupIndiaRegister"
+                  control={control}
+                  render={({ field }) => (
+                    <RadioGroup
+                      onValueChange={(value) => {
+                        const boolValue = value === "true";
+                        field.onChange(boolValue);
+                        handleInputChange(
+                          "step1",
+                          "startupIndiaRegister",
+                          boolValue
+                        );
+                      }}
+                      value={field.value ? "true" : "false"}
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem
+                          value="true"
+                          id="registered-startup-india"
+                        />
+                        <Label htmlFor="registered-startup-india">Yes</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem
+                          value="false"
+                          id="not-registered-startup-india"
+                        />
+                        <Label htmlFor="not-registered-startup-india">No</Label>
+                      </div>
+                    </RadioGroup>
+                  )}
+                />
+              </div>
+            </div>
+          </div>
+        );
+      case 2:
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="reg_number">Registration Number *</Label>
+                <Input
+                  id="reg_number"
+                  {...register("step2.reg_number")}
+                  onChange={(e) =>
+                    handleInputChange("step2", "reg_number", e.target.value)
+                  }
+                  value={formData.step2?.reg_number || ""}
+                />
+              </div>
+              <div>
+                <Label htmlFor="reg_date">Registration Date *</Label>
+                <Input
+                  id="reg_date"
+                  type="date"
+                  {...register("step2.reg_date")}
+                  onChange={(e) =>
+                    handleInputChange("step2", "reg_date", e.target.value)
+                  }
+                  value={formData.step2?.reg_date || ""}
+                />
+              </div>
+              <div>
+                <Label htmlFor="reg_certificate">
+                  Registration Certificate *
+                </Label>
+                <Input
+                  id="reg_certificate"
+                  {...register("step2.reg_certificate")}
+                  onChange={(e) =>
+                    handleInputChange(
+                      "step2",
+                      "reg_certificate",
+                      e.target.value
+                    )
+                  }
+                  value={formData.step2?.reg_certificate || ""}
+                />
+              </div>
+              <div>
+                <Label htmlFor="gst">GST Number *</Label>
+                <Input
+                  id="gst"
+                  {...register("step2.gst")}
+                  onChange={(e) =>
+                    handleInputChange("step2", "gst", e.target.value)
+                  }
+                  value={formData.step2?.gst || ""}
+                />
+              </div>
+              <div>
+                <Label>IPR Status</Label>
+                <Controller
+                  name="step2.ipr"
+                  control={control}
+                  render={({ field }) => (
+                    <RadioGroup
+                      onValueChange={(value) => {
+                        const boolValue = value === "true";
+                        field.onChange(boolValue);
+                        handleInputChange("step2", "ipr", boolValue);
+                      }}
+                      value={field.value ? "true" : "false"}
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="true" id="ipr-yes" />
+                        <Label htmlFor="ipr-yes">Yes</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="false" id="ipr-no" />
+                        <Label htmlFor="ipr-no">No</Label>
+                      </div>
+                    </RadioGroup>
+                  )}
+                />
+              </div>
+            </div>
+          </div>
+        );
+      case 3:
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="addrLine1">Address Line 1 *</Label>
+                <Input
+                  id="addrLine1"
+                  {...register("step3.addrLine1")}
+                  onChange={(e) =>
+                    handleInputChange("step3", "addrLine1", e.target.value)
+                  }
+                  value={formData.step3?.addrLine1 || ""}
+                />
+              </div>
+              <div>
+                <Label htmlFor="addLine2">Address Line 2 *</Label>
+                <Input
+                  id="addLine2"
+                  {...register("step3.addLine2")}
+                  onChange={(e) =>
+                    handleInputChange("step3", "addLine2", e.target.value)
+                  }
+                  value={formData.step3?.addLine2 || ""}
+                />
+              </div>
+              <div>
+                <Label htmlFor="state">State *</Label>
+                <Controller
+                  name="step3.state"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        handleInputChange("step3", "state", value);
+                        handleInputChange("step3", "city", "");
+                      }}
+                      value={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select State" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {indianStates.map((state) => (
+                          <SelectItem key={state} value={state}>
+                            {state}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
+              <div>
+                <Label htmlFor="city">City *</Label>
+                <Controller
+                  name="step3.city"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        handleInputChange("step3", "city", value);
+                      }}
+                      value={field.value}
+                      disabled={!watch("step3.state")}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select City" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {watch("step3.state") &&
+                          citiesByState[watch("step3.state")]?.map((city) => (
+                            <SelectItem key={city} value={city}>
+                              {city}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
+              <div>
+                <Label htmlFor="district">District *</Label>
+                <Input
+                  id="district"
+                  {...register("step3.district")}
+                  onChange={(e) =>
+                    handleInputChange("step3", "district", e.target.value)
+                  }
+                  value={formData.step3?.district || ""}
+                />
+              </div>
+              <div>
+                <Label htmlFor="pincode">PIN Code *</Label>
+                <Input
+                  id="pincode"
+                  type="number"
+                  {...register("step3.pincode", { valueAsNumber: true })}
+                  onChange={(e) =>
+                    handleInputChange(
+                      "step3",
+                      "pincode",
+                      parseInt(e.target.value)
+                    )
+                  }
+                  value={formData.step3?.pincode || ""}
+                />
+              </div>
+            </div>
+          </div>
+        );
+      case 4:
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="founderName">Founder Name *</Label>
+                <Input
+                  id="founderName"
+                  {...register("step4.founderName")}
+                  onChange={(e) =>
+                    handleInputChange("step4", "founderName", e.target.value)
+                  }
+                  value={formData.step4?.founderName || ""}
+                />
+              </div>
+              <div>
+                <Label htmlFor="designation">Designation *</Label>
+                <Controller
+                  name="step4.designation"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        handleInputChange("step4", "designation", value);
+                      }}
+                      value={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Designation" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {designations.map((designation) => (
+                          <SelectItem key={designation} value={designation}>
+                            {designation}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
+              <div>
+                <Label htmlFor="mobile">Mobile Number *</Label>
+                <Input
+                  id="mobile"
+                  {...register("step4.mobile")}
+                  onChange={(e) =>
+                    handleInputChange("step4", "mobile", e.target.value)
+                  }
+                  value={formData.step4?.mobile || ""}
+                />
+              </div>
+              <div>
+                <Label htmlFor="address">Founder Address *</Label>
+                <Input
+                  id="address"
+                  {...register("step4.address")}
+                  onChange={(e) =>
+                    handleInputChange("step4", "address", e.target.value)
+                  }
+                  value={formData.step4?.address || ""}
+                />
+              </div>
+              <div>
+                <Label htmlFor="equity">Equity (%) *</Label>
+                <Input
+                  id="equity"
+                  type="number"
+                  {...register("step4.equity", { valueAsNumber: true })}
+                  onChange={(e) =>
+                    handleInputChange(
+                      "step4",
+                      "equity",
+                      parseInt(e.target.value)
+                    )
+                  }
+                  value={formData.step4?.equity || ""}
+                />
+              </div>
+              <div>
+                <Label htmlFor="email">Email *</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  {...register("step4.email")}
+                  onChange={(e) =>
+                    handleInputChange("step4", "email", e.target.value)
+                  }
+                  value={formData.step4?.email || ""}
+                />
+              </div>
+              <div>
+                <Label htmlFor="pitch_deck">Pitch Deck *</Label>
+                <Input
+                  id="pitch_deck"
+                  {...register("step4.pitch_deck")}
+                  onChange={(e) =>
+                    handleInputChange("step4", "pitch_deck", e.target.value)
+                  }
+                  value={formData.step4?.pitch_deck || ""}
+                />
+              </div>
+              <div>
+                <Label htmlFor="Aadhar_Number">Aadhar Number *</Label>
+                <Input
+                  id="Aadhar_Number"
+                  {...register("step4.Aadhar_Number")}
+                  onChange={(e) =>
+                    handleInputChange("step4", "Aadhar_Number", e.target.value)
+                  }
+                  value={formData.step4?.Aadhar_Number || ""}
+                />
+              </div>
+              <div>
+                <Label htmlFor="Pan_Number">PAN Number *</Label>
+                <Input
+                  id="Pan_Number"
+                  {...register("step4.Pan_Number")}
+                  onChange={(e) =>
+                    handleInputChange("step4", "Pan_Number", e.target.value)
+                  }
+                  value={formData.step4?.Pan_Number || ""}
+                />
+              </div>
+              <div>
+                <Label htmlFor="Dipp_number">DIPP Number *</Label>
+                <Input
+                  id="Dipp_number"
+                  {...register("step4.Dipp_number")}
+                  onChange={(e) =>
+                    handleInputChange("step4", "Dipp_number", e.target.value)
+                  }
+                  value={formData.step4?.Dipp_number || ""}
+                />
+              </div>
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
   };
-
-  const handlePrev = () => {
-    setCurrentStep((prev) => Math.max(prev - 1, 1));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Here you would typically send the data to your backend
-  };
-
-  const InputField = ({
-    label,
-    name,
-    type = "text",
-    required = false,
-    ...props
-  }: {
-    label: string;
-    name: string;
-    type?: string;
-    required?: boolean;
-    [key: string]: any;
-  }) => (
-    <div className="mb-4">
-      <label
-        htmlFor={name}
-        className="block text-sm font-medium text-gray-700 mb-1"
-      >
-        {label}
-        {required && " *"}
-      </label>
-      <input
-        type={type}
-        id={name}
-        name={name}
-        value={formData[name as keyof FormData] as string}
-        onChange={handleInputChange}
-        required={required}
-        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-        {...props}
-      />
-    </div>
-  );
-
-  const SelectField = ({
-    label,
-    name,
-    options,
-    required = false,
-  }: {
-    label: string;
-    name: string;
-    options: string[];
-    required?: boolean;
-  }) => (
-    <div className="mb-4">
-      <label
-        htmlFor={name}
-        className="block text-sm font-medium text-gray-700 mb-1"
-      >
-        {label}
-        {required && " *"}
-      </label>
-      <select
-        id={name}
-        name={name}
-        value={formData[name as keyof FormData] as string}
-        onChange={handleInputChange}
-        required={required}
-        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-      >
-        <option value="">Select {label}</option>
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-
-  const RadioField = ({
-    label,
-    name,
-    options,
-    required = false,
-  }: {
-    label: string;
-    name: string;
-    options: string[];
-    required?: boolean;
-  }) => (
-    <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        {label}
-        {required && " *"}
-      </label>
-      <div className="flex space-x-4">
-        {options.map((option) => (
-          <label key={option} className="inline-flex items-center">
-            <input
-              type="radio"
-              name={name}
-              value={option}
-              checked={formData[name as keyof FormData] === option}
-              onChange={handleInputChange}
-              required={required}
-              className="form-radio h-4 w-4 text-blue-600"
-            />
-            <span className="ml-2 text-sm">{option}</span>
-          </label>
-        ))}
-      </div>
-    </div>
-  );
-
-  const FileUploadField = ({
-    label,
-    name,
-    accept,
-    required = false,
-  }: {
-    label: string;
-    name: string;
-    accept: string;
-    required?: boolean;
-  }) => (
-    <div className="mb-4">
-      <label
-        htmlFor={name}
-        className="block text-sm font-medium text-gray-700 mb-1"
-      >
-        {label}
-        {required && " *"}
-      </label>
-      <div className="flex items-center">
-        <input
-          type="file"
-          id={name}
-          name={name}
-          onChange={handleFileChange}
-          accept={accept}
-          required={required}
-          className="sr-only"
-        />
-        <label
-          htmlFor={name}
-          className="cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <Upload className="h-5 w-5 inline-block mr-2" />
-          Upload File
-        </label>
-        <span className="ml-3 text-sm text-gray-500">
-          {formData[name as keyof FormData]
-            ? (formData[name as keyof FormData] as File).name
-            : "No file chosen"}
-        </span>
-      </div>
-    </div>
-  );
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 font-poppins">
-      <div className="bg-white p-4 sm:p-8 rounded-lg shadow-lg w-full max-w-4xl">
-        <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
-          Registration Form
-        </h1>
-        <div className="mb-8">
-          <div className="flex flex-col sm:flex-row justify-between items-center">
-            {[1, 2, 3, 4].map((step, index) => (
-              <React.Fragment key={step}>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4 pt-20">
+      <Card className="w-full max-w-4xl shadow-lg">
+        <CardHeader className="bg-primary text-primary-foreground">
+          <CardTitle className="text-center text-2xl font-bold">
+            Startup Registration Form
+          </CardTitle>
+          <div className="flex justify-center space-x-8 mt-4">
+            {[1, 2, 3, 4].map((stepNumber) => (
+              <div
+                key={stepNumber}
+                className={`flex flex-col items-center ${
+                  step === stepNumber
+                    ? "text-white"
+                    : "text-primary-foreground/60"
+                }`}
+              >
                 <div
-                  className={`w-full sm:w-1/4 text-center mb-4 sm:mb-0 ${
-                    currentStep >= step ? "text-indigo-600" : "text-gray-400"
-                  } ${step !== currentStep ? "hidden sm:block" : ""}`}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${
+                    step === stepNumber
+                      ? "bg-white text-primary"
+                      : "bg-primary-foreground/20"
+                  }`}
                 >
-                  <div
-                    className={`w-10 h-10 mx-auto rounded-full flex items-center justify-center border-2 ${
-                      currentStep >= step
-                        ? "border-indigo-600 bg-indigo-600 text-white"
-                        : "border-gray-400"
-                    }`}
-                  >
-                    {step}
-                  </div>
-                  <div className="mt-2 text-sm">
-                    {step === 1 && "Profile"}
-                    {step === 2 && "Registration"}
-                    {step === 3 && "Address"}
-                    {step === 4 && "Founder"}
-                  </div>
+                  {stepNumber}
                 </div>
-                {index < 3 && (
-                  <div className="hidden sm:block w-full sm:w-auto border-t-2 border-gray-300 flex-grow mx-4" />
-                )}
-              </React.Fragment>
+                <span className="text-sm mt-2 font-medium">
+                  {stepNumber === 1
+                    ? "Profile"
+                    : stepNumber === 2
+                    ? "Registration"
+                    : stepNumber === 3
+                    ? "Address"
+                    : "Founder"}
+                </span>
+              </div>
             ))}
           </div>
-        </div>
-        <form onSubmit={handleSubmit}>
-          {currentStep === 1 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <InputField label="Name of Startup" name="startupName" required />
-              <SelectField
-                label="Industry"
-                name="industry"
-                options={[
-                  "Technology",
-                  "Finance",
-                  "Healthcare",
-                  "Education",
-                  "E-commerce",
-                ]}
-                required
-              />
-              <SelectField
-                label="Sector"
-                name="sector"
-                options={[
-                  "Artificial Intelligence",
-                  "Blockchain",
-                  "Internet of Things",
-                  "SaaS",
-                  "Fintech",
-                ]}
-                required
-              />
-              <SelectField
-                label="Categories"
-                name="categories"
-                options={["B2B", "B2C", "D2C", "Hardware", "Software"]}
-                required
-              />
-              <SelectField
-                label="Nature of Entity"
-                name="natureOfEntity"
-                options={[
-                  "Private Limited Company",
-                  "Limited Liability Partnership",
-                  "Partnership Firm",
-                  "Sole Proprietorship",
-                ]}
-                required
-              />
-              <InputField label="Brand Name" name="brandName" />
-              <RadioField
-                label="Entity Registration Status"
-                name="entityRegistrationStatus"
-                options={["Yes", "No"]}
-                required
-              />
-              <SelectField
-                label="Innovation Model"
-                name="innovationModel"
-                options={[
-                  "Product Innovation",
-                  "Process Innovation",
-                  "Business Model Innovation",
-                  "Social Innovation",
-                ]}
-              />
-              <SelectField
-                label="Team Size"
-                name="teamSize"
-                options={["1-5", "6-15", "16-25", "26-50", "51+"]}
-                required
-              />
-              <RadioField
-                label="Incubation Status"
-                name="incubationStatus"
-                options={["Yes", "No"]}
-                required
-              />
-              <SelectField
-                label="Current Stage"
-                name="currentStage"
-                options={[
-                  "Ideation",
-                  "Validation",
-                  "Early Traction",
-                  "Scaling",
-                ]}
-                required
-              />
-              <RadioField
-                label="Funding/Grants received"
-                name="fundingStatus"
-                options={["Yes", "No"]}
-              />
-              <RadioField
-                label="Registered under Startup India program"
-                name="startupIndiaRegistration"
-                options={["Yes", "No"]}
-                required
-              />
-              <div className="col-span-2">
-                <label
-                  htmlFor="businessDescription"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+        </CardHeader>
+        <CardContent className="mt-6">
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {renderStep()}
+            <div className="flex justify-between mt-6">
+              {step > 1 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setStep(step - 1)}
                 >
-                  Tell us something about your business
-                </label>
-                <textarea
-                  id="businessDescription"
-                  name="businessDescription"
-                  value={formData.businessDescription}
-                  onChange={handleInputChange}
-                  rows={4}
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                ></textarea>
-              </div>
+                  <ArrowLeft className="mr-2 h-4 w-4" /> Previous
+                </Button>
+              )}
+              {step < 4 ? (
+                <Button
+                  type="button"
+                  onClick={() => setStep(step + 1)}
+                  className="ml-auto"
+                >
+                  Next
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  className="ml-auto bg-green-600 hover:bg-green-700"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Submitting..." : "Submit"}
+                </Button>
+              )}
             </div>
-          )}
-          {currentStep === 2 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <InputField
-                label="Incorporation/Registration Number"
-                name="incorporationNumber"
-                required
-              />
-              <InputField
-                label="Incorporation/Registration Date"
-                name="incorporationDate"
-                type="date"
-                required
-              />
-              <FileUploadField
-                label="Incorporation/Registration Certificate"
-                name="incorporationCertificate"
-                accept=".pdf,.jpg,.jpeg,.png"
-                required
-              />
-              <InputField label="TAN/GST" name="tanGst" />
-              <RadioField
-                label="Have your startup applied for any IPR"
-                name="iprApplication"
-                options={["Yes", "No"]}
-                required
-              />
+          </form>
+        </CardContent>
+      </Card>
+
+      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Registration Successful</DialogTitle>
+          </DialogHeader>
+          <div className="flex items-center justify-center p-6">
+            <div className="rounded-full bg-green-100 p-4">
+              <Check className="h-6 w-6 text-green-600" />
             </div>
-          )}
-          {currentStep === 3 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <InputField label="Address Line 1" name="addressLine1" required />
-              <InputField label="Address Line 2" name="addressLine2" required />
-              <SelectField
-                label="State"
-                name="state"
-                options={["Maharashtra", "Karnataka", "Delhi"]}
-                required
-              />
-              <SelectField
-                label="City"
-                name="city"
-                options={["Mumbai", "Bangalore", "Delhi"]}
-                required
-              />
-              <InputField label="District" name="district" />
-              <InputField
-                label="PIN Code"
-                name="pinCode"
-                required
-                pattern="[0-9]{6}"
-              />
-            </div>
-          )}
-          {currentStep === 4 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <InputField label="Name" name="founderName" required />
-              <SelectField
-                label="Designation"
-                name="designation"
-                options={["Founder", "Co-Founder", "Director", "Partner"]}
-                required
-              />
-              <InputField
-                label="Mobile No."
-                name="mobileNumber"
-                type="tel"
-                required
-                pattern="[0-9]{10}"
-              />
-              <InputField label="Address" name="founderAddress" required />
-              <InputField
-                label="PAN Number"
-                name="panNumber"
-                pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
-              />
-              <InputField
-                label="Aadhar Number"
-                name="aadharNumber"
-                pattern="[0-9]{12}"
-              />
-              <InputField label="DIPP Number" name="dippNumber" required />
-              <InputField
-                label="Equity (%)"
-                name="equity"
-                type="number"
-                min="0"
-                max="100"
-              />
-              <RadioField
-                label="Publish Your Profile For Showcase"
-                name="publishProfile"
-                options={["Yes", "No"]}
-              />
-              <FileUploadField
-                label="Pitch Deck"
-                name="pitchDeck"
-                accept=".pdf,.ppt,.pptx"
-                required
-              />
-              <FileUploadField
-                label="Your Logo"
-                name="logo"
-                accept=".jpg,.jpeg,.png"
-                required
-              />
-              <div className="col-span-2">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    name="termsAccepted"
-                    checked={formData.termsAccepted}
-                    onChange={handleInputChange}
-                    required
-                    className="form-checkbox h-4 w-4 text-blue-600"
-                  />
-                  <span className="ml-2 text-sm text-gray-700">
-                    I accept the Terms & Conditions
-                  </span>
-                </label>
-              </div>
-              <p className="col-span-2 text-sm text-gray-500">
-                Please Note: The Certificate of Recognition for Startup will be
-                issued after verification of the application and documents
-                submitted and final approval granted by the Govt of Raj.
-              </p>
-            </div>
-          )}
-          <div className="mt-8 flex justify-between">
-            {currentStep > 1 && (
-              <button
-                type="button"
-                onClick={handlePrev}
-                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 flex items-center"
-              >
-                <ChevronLeft className="w-5 h-5 mr-2" />
-                Previous
-              </button>
-            )}
-            {currentStep < 4 ? (
-              <button
-                type="button"
-                onClick={handleNext}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 flex items-center ml-auto"
-              >
-                Next
-                <ChevronRight className="w-5 h-5 ml-2" />
-              </button>
-            ) : (
-              <button
-                type="submit"
-                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 ml-auto"
-              >
-                Submit
-              </button>
-            )}
           </div>
-        </form>
-      </div>
+          <p className="text-center text-muted-foreground">
+            Your startup has been successfully registered.
+          </p>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showFailureModal} onOpenChange={setShowFailureModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Registration Failed</DialogTitle>
+          </DialogHeader>
+          <div className="flex items-center justify-center p-6">
+            <div className="rounded-full bg-red-100 p-4">
+              <X className="h-6 w-6 text-red-600" />
+            </div>
+          </div>
+          <p className="text-center text-muted-foreground">
+            There was an error registering your startup. Please try again.
+          </p>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
