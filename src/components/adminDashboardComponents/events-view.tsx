@@ -1,14 +1,39 @@
 import * as React from "react";
 import { format } from "date-fns";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, MoreVertical, Pencil, Trash2, FileText, Upload, ChevronLeft } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Plus, MoreVertical, Pencil, Trash2, ChevronLeft } from "lucide-react";
 
 type Event = {
   id: string;
@@ -29,7 +54,9 @@ type EventRegistration = {
 export function EventsView() {
   const [events, setEvents] = React.useState<Event[]>([]);
   const [selectedEvent, setSelectedEvent] = React.useState<Event | null>(null);
-  const [registrations, setRegistrations] = React.useState<EventRegistration[]>([]);
+  const [registrations, setRegistrations] = React.useState<EventRegistration[]>(
+    []
+  );
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -59,7 +86,9 @@ export function EventsView() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(`http://localhost:8080/registrations/getRegistrations/${eventId}`);
+      const response = await fetch(
+        `http://localhost:8080/registrations/getRegistrations/${eventId}`
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch registrations");
       }
@@ -92,15 +121,21 @@ export function EventsView() {
     }
   };
 
-  const handleEditEvent = async (eventId: string, eventData: Omit<Event, "id">) => {
+  const handleEditEvent = async (
+    eventId: string,
+    eventData: Omit<Event, "id">
+  ) => {
     try {
-      const response = await fetch(`http://localhost:8080/events/update/${eventId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(eventData),
-      });
+      const response = await fetch(
+        `http://localhost:8080/events/update/${eventId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(eventData),
+        }
+      );
       if (!response.ok) {
         throw new Error("Failed to update event");
       }
@@ -113,9 +148,12 @@ export function EventsView() {
 
   const handleDeleteEvent = async (eventId: string) => {
     try {
-      const response = await fetch(`http://localhost:8080/events/delete/${eventId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `http://localhost:8080/events/delete/${eventId}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (!response.ok) {
         throw new Error("Failed to delete event");
       }
@@ -161,7 +199,9 @@ export function EventsView() {
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Add New Event</DialogTitle>
-                  <DialogDescription>Create a new event by filling out the form below.</DialogDescription>
+                  <DialogDescription>
+                    Create a new event by filling out the form below.
+                  </DialogDescription>
                 </DialogHeader>
                 <EventForm onSubmit={handleAddEvent} />
               </DialogContent>
@@ -184,7 +224,17 @@ export function EventsView() {
   );
 }
 
-function EventCard({ event, onShowRegistrations, onEdit, onDelete }: { event: Event; onShowRegistrations: () => void; onEdit: (data: Omit<Event, "id">) => void; onDelete: () => void }) {
+function EventCard({
+  event,
+  onShowRegistrations,
+  onEdit,
+  onDelete,
+}: {
+  event: Event;
+  onShowRegistrations: () => void;
+  onEdit: (data: Omit<Event, "id">) => void;
+  onDelete: () => void;
+}) {
   return (
     <Card className="overflow-hidden">
       <CardHeader className="p-0">
@@ -215,7 +265,9 @@ function EventCard({ event, onShowRegistrations, onEdit, onDelete }: { event: Ev
                 <DialogContent>
                   <DialogHeader>
                     <DialogTitle>Edit Event</DialogTitle>
-                    <DialogDescription>Make changes to the event details below.</DialogDescription>
+                    <DialogDescription>
+                      Make changes to the event details below.
+                    </DialogDescription>
                   </DialogHeader>
                   <EventForm onSubmit={onEdit} initialData={event} />
                 </DialogContent>
@@ -233,10 +285,16 @@ function EventCard({ event, onShowRegistrations, onEdit, onDelete }: { event: Ev
         <time className="text-sm text-muted-foreground mb-2 block">
           {format(new Date(event.date), "PPP")}
         </time>
-        <p className="text-sm text-muted-foreground line-clamp-3">{event.description}</p>
+        <p className="text-sm text-muted-foreground line-clamp-3">
+          {event.description}
+        </p>
       </CardContent>
       <CardFooter>
-        <Button className="w-full" variant="outline" onClick={onShowRegistrations}>
+        <Button
+          className="w-full"
+          variant="outline"
+          onClick={onShowRegistrations}
+        >
           Show Registrations
         </Button>
       </CardFooter>
@@ -244,15 +302,25 @@ function EventCard({ event, onShowRegistrations, onEdit, onDelete }: { event: Ev
   );
 }
 
-function EventForm({ onSubmit, initialData }: { onSubmit: (data: Omit<Event, "id">) => void; initialData?: Event }) {
-  const [formData, setFormData] = React.useState(initialData || {
-    name: "",
-    posterLink: "",
-    date: "",
-    description: "",
-  });
+function EventForm({
+  onSubmit,
+  initialData,
+}: {
+  onSubmit: (data: Omit<Event, "id">) => void;
+  initialData?: Event;
+}) {
+  const [formData, setFormData] = React.useState(
+    initialData || {
+      name: "",
+      posterLink: "",
+      date: "",
+      description: "",
+    }
+  );
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -266,32 +334,69 @@ function EventForm({ onSubmit, initialData }: { onSubmit: (data: Omit<Event, "id
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="name">Event Name</Label>
-        <Input id="name" name="name" value={formData.name} onChange={handleChange} required />
+        <Input
+          id="name"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+        />
       </div>
       <div className="space-y-2">
         <Label htmlFor="posterLink">Poster Link</Label>
-        <Input id="posterLink" name="posterLink" value={formData.posterLink} onChange={handleChange} required />
+        <Input
+          id="posterLink"
+          name="posterLink"
+          value={formData.posterLink}
+          onChange={handleChange}
+          required
+        />
       </div>
       <div className="space-y-2">
         <Label htmlFor="date">Event Date</Label>
-        <Input id="date" name="date" type="datetime-local" value={formData.date} onChange={handleChange} required />
+        <Input
+          id="date"
+          name="date"
+          type="datetime-local"
+          value={formData.date}
+          onChange={handleChange}
+          required
+        />
       </div>
       <div className="space-y-2">
         <Label htmlFor="description">Description</Label>
-        <Textarea id="description" name="description" value={formData.description} onChange={handleChange} required />
+        <Textarea
+          id="description"
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          required
+        />
       </div>
       <Button type="submit">Save Event</Button>
     </form>
   );
 }
 
-function RegistrationsView({ event, registrations, onBack }: { event: Event; registrations: EventRegistration[]; onBack: () => void }) {
+function RegistrationsView({
+  event,
+  registrations,
+  onBack,
+}: {
+  event: Event;
+  registrations: EventRegistration[];
+  onBack: () => void;
+}) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">{event.name} - Registrations</h2>
-          <p className="text-muted-foreground mt-1">{format(new Date(event.date), "PPP")}</p>
+          <h2 className="text-3xl font-bold tracking-tight">
+            {event.name} - Registrations
+          </h2>
+          <p className="text-muted-foreground mt-1">
+            {format(new Date(event.date), "PPP")}
+          </p>
         </div>
         <Button variant="outline" onClick={onBack}>
           <ChevronLeft className="mr-2 h-4 w-4" />
@@ -311,14 +416,18 @@ function RegistrationsView({ event, registrations, onBack }: { event: Event; reg
             {registrations.length > 0 ? (
               registrations.map((registration) => (
                 <TableRow key={registration.id}>
-                  <TableCell className="font-medium">{registration.name}</TableCell>
+                  <TableCell className="font-medium">
+                    {registration.name}
+                  </TableCell>
                   <TableCell>{registration.email}</TableCell>
                   <TableCell>{registration.number}</TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={3} className="text-center">No registrations found</TableCell>
+                <TableCell colSpan={3} className="text-center">
+                  No registrations found
+                </TableCell>
               </TableRow>
             )}
           </TableBody>
@@ -327,4 +436,3 @@ function RegistrationsView({ event, registrations, onBack }: { event: Event; reg
     </div>
   );
 }
-
