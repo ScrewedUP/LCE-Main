@@ -103,7 +103,7 @@ export function StartupsView() {
     setError(null);
     try {
       const response = await fetch(
-        "http://localhost:8080/startups/getStartupList"
+        "https://lce-backend-j2kx.onrender.com/startups/getStartupList"
       );
       if (!response.ok) {
         throw new Error("Failed to fetch startups");
@@ -123,7 +123,7 @@ export function StartupsView() {
   ) => {
     try {
       const response = await fetch(
-        "http://localhost:8080/startups/addStartup",
+        "https://lce-backend-j2kx.onrender.com/startups/addStartup",
         {
           method: "POST",
           headers: {
@@ -148,7 +148,7 @@ export function StartupsView() {
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/startups/update/${userId}`,
+        `https://lce-backend-j2kx.onrender.com/startups/update/${userId}`,
         {
           method: "PATCH",
           headers: {
@@ -170,7 +170,7 @@ export function StartupsView() {
   const handleDeleteStartup = async (userId: string) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/startups/reject/${userId}`,
+        `https://lce-backend-j2kx.onrender.com/startups/reject/${userId}`,
         {
           method: "DELETE",
         }

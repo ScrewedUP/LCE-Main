@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-
+import { useNavigate } from "react-router-dom";
 interface Startup {
   id: number;
   name: string;
@@ -215,7 +215,7 @@ const Modal: React.FC<{
 
 const Portfolio: React.FC = () => {
   const [selectedStartup, setSelectedStartup] = useState<Startup | null>(null);
-
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-blue-50 pt-20">
       <div className="max-w-7xl mx-auto px-4 py-16">
@@ -258,7 +258,12 @@ const Portfolio: React.FC = () => {
             now to our accelerator program and turn your groundbreaking idea
             into reality.
           </p>
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-300 text-lg px-8 py-3 rounded-full">
+          <Button
+            className="bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-300 text-lg px-8 py-3 rounded-full"
+            onClick={() => {
+              navigate("/register");
+            }}
+          >
             Apply Now
             <ArrowRight className="w-5 h-5 ml-2" />
           </Button>

@@ -68,7 +68,9 @@ export function EventsView() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch("http://localhost:8080/events/getEvents");
+      const response = await fetch(
+        "https://lce-backend-j2kx.onrender.com/events/getEvents"
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch events");
       }
@@ -87,7 +89,7 @@ export function EventsView() {
     setError(null);
     try {
       const response = await fetch(
-        `http://localhost:8080/registrations/getRegistrations/${eventId}`
+        `https://lce-backend-j2kx.onrender.com/registrations/getRegistrations/${eventId}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch registrations");
@@ -104,13 +106,16 @@ export function EventsView() {
 
   const handleAddEvent = async (eventData: Omit<Event, "id">) => {
     try {
-      const response = await fetch("http://localhost:8080/events/addEvent", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(eventData),
-      });
+      const response = await fetch(
+        "https://lce-backend-j2kx.onrender.com/events/addEvent",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(eventData),
+        }
+      );
       if (!response.ok) {
         throw new Error("Failed to add event");
       }
@@ -127,7 +132,7 @@ export function EventsView() {
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/events/update/${eventId}`,
+        `https://lce-backend-j2kx.onrender.com/events/update/${eventId}`,
         {
           method: "PUT",
           headers: {
@@ -149,7 +154,7 @@ export function EventsView() {
   const handleDeleteEvent = async (eventId: string) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/events/delete/${eventId}`,
+        `https://lce-backend-j2kx.onrender.com/events/delete/${eventId}`,
         {
           method: "DELETE",
         }

@@ -35,7 +35,7 @@ export function RegisteredEventsSection({ email }: { email: string }) {
     try {
       // Fetch all events
       const eventsResponse = await fetch(
-        "http://localhost:8080/events/getEvents"
+        "https://lce-backend-j2kx.onrender.com/events/getEvents"
       );
       if (!eventsResponse.ok) {
         throw new Error("Failed to fetch events");
@@ -44,7 +44,7 @@ export function RegisteredEventsSection({ email }: { email: string }) {
 
       // Fetch registrations for the current user
       const registrationsResponse = await fetch(
-        `http://localhost:8080/registrations/getUserRegistrations?email=${encodeURIComponent(
+        `https://lce-backend-j2kx.onrender.com/registrations/getUserRegistrations?email=${encodeURIComponent(
           email
         )}`
       );

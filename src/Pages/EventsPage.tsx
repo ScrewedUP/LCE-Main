@@ -26,7 +26,9 @@ interface Event {
 
 const fetchEvents = async (): Promise<Event[]> => {
   try {
-    const response = await fetch("http://localhost:8080/events/getEvents");
+    const response = await fetch(
+      "https://lce-backend-j2kx.onrender.com/events/getEvents"
+    );
     if (!response.ok) throw new Error("Failed to fetch events");
     return await response.json();
   } catch (error) {
@@ -201,7 +203,7 @@ const Events: React.FC = () => {
   ) => {
     try {
       const response = await fetch(
-        "http://localhost:8080/registrations/registerEvent",
+        "https://lce-backend-j2kx.onrender.com/registrations/registerEvent",
         {
           method: "POST",
           headers: {

@@ -7,8 +7,10 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 export default function AboutUs() {
+  const naviagte = useNavigate();
   return (
     <div className="min-h-screen bg-blue-50 text-gray-800 font-poppins pt-10">
       {/* Hero Section */}
@@ -25,7 +27,12 @@ export default function AboutUs() {
               impactful realities.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full text-lg">
+              <Button
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full text-lg"
+                onClick={() => {
+                  naviagte("/programs");
+                }}
+              >
                 Explore Programs
               </Button>
               <Button
@@ -150,21 +157,21 @@ export default function AboutUs() {
               description:
                 "Safe Security's AI-powered platform helps organizations measure and mitigate cyber risks in real-time.",
               image:
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAV4kGWq6nz8Yc2Y9ESW4ALHFrGKhmP_JmiVwnXgp9973KB-1a",
+                "https://www.veracode.com/sites/default/files/2021-03/verified-safe-security-logo.png",
             },
             {
               title: "Neutrino Group",
               description:
                 "Neutrino Group develops cutting-edge technologies for sustainable energy production and viable storage.",
               image:
-                "https://media.licdn.com/dms/image/v2/C4D03AQFOvwauczP3Xw/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1580270991790?e=2147483647&v=beta&t=cDBnBVJpDU2kdazGkmWcqTXeQLUBi-EER1uFe_NwFNE",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx8MxvEnwVpS9EZ0iqVP2wbv5kjcwRLz5jUg&s",
             },
             {
               title: "WiJungle",
               description:
                 "WiJungle provides a comprehensive network security solution for enterprises and government organizations.",
               image:
-                "https://static.businessworld.in/1611915694_Xb4Qwa_Karmesh_Gupta_WiJungle.jpg",
+                "https://media.licdn.com/dms/image/v2/D560BAQFEQ7vU6zK7nA/company-logo_200_200/company-logo_200_200/0/1703499034083/wijungle_logo?e=2147483647&v=beta&t=IUwb_-oeh-YBWWxptu_y2Me5eMqmN7xJxZz-3i1y5Go",
             },
           ].map((story, index) => (
             <motion.div
@@ -177,7 +184,7 @@ export default function AboutUs() {
               <img
                 src={story.image}
                 alt={story.title}
-                className="w-full h-48 object-cover"
+                className="w-full h-48 object-contain"
               />
               <div className="p-6">
                 <h3 className="text-xl font-bold mb-2 text-gray-800">
@@ -187,6 +194,9 @@ export default function AboutUs() {
                 <Button
                   variant="outline"
                   className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                  onClick={() => {
+                    naviagte("/portfolio");
+                  }}
                 >
                   Read More <ArrowUpRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -207,7 +217,12 @@ export default function AboutUs() {
             ideas into successful ventures. The future of entrepreneurship
             starts here!
           </p>
-          <Button className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-full text-lg font-semibold">
+          <Button
+            className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-full text-lg font-semibold"
+            onClick={() => {
+              naviagte("/register");
+            }}
+          >
             Apply Now
           </Button>
         </div>
