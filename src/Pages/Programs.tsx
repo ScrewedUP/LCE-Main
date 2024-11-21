@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Zap, Rocket, Lightbulb, Globe, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface Program {
   id: number;
@@ -94,6 +95,7 @@ const ProgramCard: React.FC<{ program: Program }> = ({ program }) => (
 );
 
 const Programs: React.FC = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-blue-50 pt-20">
       <div className="max-w-7xl mx-auto px-4 py-16">
@@ -132,7 +134,12 @@ const Programs: React.FC = () => {
             Join our next cohort of visionary entrepreneurs and be at the
             forefront of technological breakthroughs.
           </p>
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-300 text-lg px-8 py-3 rounded-full">
+          <Button
+            className="bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-300 text-lg px-8 py-3 rounded-full"
+            onClick={() => {
+              navigate("/register");
+            }}
+          >
             Apply Now
             <ArrowRight className="w-5 h-5 ml-2" />
           </Button>

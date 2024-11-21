@@ -41,7 +41,7 @@ export function ProfileSection({
   const handleSave = async (field: keyof StartupProfile) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/startups/update/${startup.user_id}`,
+        `https://lce-backend-j2kx.onrender.com/startups/update/${startup.user_id}`,
         {
           method: "PATCH",
           headers: {

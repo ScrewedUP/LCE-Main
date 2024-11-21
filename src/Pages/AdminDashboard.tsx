@@ -197,7 +197,9 @@ export default function AdminDashboard() {
 
   const fetchEvents = async () => {
     try {
-      const response = await fetch("http://localhost:8080/events/getEvents");
+      const response = await fetch(
+        "https://lce-backend-j2kx.onrender.com/events/getEvents"
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch events");
       }
@@ -215,7 +217,7 @@ export default function AdminDashboard() {
     try {
       console.log("Fetching registrations for event:", eventId);
       const response = await fetch(
-        `http://localhost:8080/registrations/getRegistrations/${eventId}`
+        `https://lce-backend-j2kx.onrender.com/registrations/getRegistrations/${eventId}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch registrations");
@@ -240,13 +242,16 @@ export default function AdminDashboard() {
 
   const handleAddEvent = async (eventData: Omit<Event, "id">) => {
     try {
-      const response = await fetch("http://localhost:8080/events/addEvent", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(eventData),
-      });
+      const response = await fetch(
+        "https://lce-backend-j2kx.onrender.com/events/addEvent",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(eventData),
+        }
+      );
       if (!response.ok) {
         throw new Error("Failed to add event");
       }
@@ -263,7 +268,7 @@ export default function AdminDashboard() {
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/events/update/${eventId}`,
+        `https://lce-backend-j2kx.onrender.com/events/update/${eventId}`,
         {
           method: "PUT",
           headers: {
@@ -283,7 +288,9 @@ export default function AdminDashboard() {
   };
   const fetchPrograms = async () => {
     try {
-      const response = await fetch("http://localhost:8080/program/programs");
+      const response = await fetch(
+        "https://lce-backend-j2kx.onrender.com/program/programs"
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch programs");
       }
@@ -297,13 +304,16 @@ export default function AdminDashboard() {
 
   const handleAddProgram = async (programData: Omit<Program, "id">) => {
     try {
-      const response = await fetch("http://localhost:8080/program/addProgram", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(programData),
-      });
+      const response = await fetch(
+        "https://lce-backend-j2kx.onrender.com/program/addProgram",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(programData),
+        }
+      );
       if (!response.ok) {
         throw new Error("Failed to add program");
       }
@@ -320,7 +330,7 @@ export default function AdminDashboard() {
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/program/programs/${programId}`,
+        `https://lce-backend-j2kx.onrender.com/program/programs/${programId}`,
         {
           method: "PUT",
           headers: {
@@ -342,7 +352,7 @@ export default function AdminDashboard() {
   const handleDeleteProgram = async (programId: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/program/programs/${programId}`,
+        `https://lce-backend-j2kx.onrender.com/program/programs/${programId}`,
         {
           method: "DELETE",
         }
@@ -360,7 +370,7 @@ export default function AdminDashboard() {
   const fetchPortfolios = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8080/portfolio/portfolios"
+        "https://lce-backend-j2kx.onrender.com/portfolio/portfolios"
       );
       if (!response.ok) {
         throw new Error("Failed to fetch portfolios");
@@ -376,7 +386,7 @@ export default function AdminDashboard() {
   const handleAddPortfolio = async (portfolioData: Omit<Portfolio, "id">) => {
     try {
       const response = await fetch(
-        "http://localhost:8080/portfolio/addPortfolios",
+        "https://lce-backend-j2kx.onrender.com/portfolio/addPortfolios",
         {
           method: "POST",
           headers: {
@@ -401,7 +411,7 @@ export default function AdminDashboard() {
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/portfolio/portfolios/${portfolioId}`,
+        `https://lce-backend-j2kx.onrender.com/portfolio/portfolios/${portfolioId}`,
         {
           method: "PUT",
           headers: {
@@ -423,7 +433,7 @@ export default function AdminDashboard() {
   const handleDeletePortfolio = async (portfolioId: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/portfolio/portfolios/${portfolioId}`,
+        `https://lce-backend-j2kx.onrender.com/portfolio/portfolios/${portfolioId}`,
         {
           method: "DELETE",
         }
@@ -1026,7 +1036,7 @@ function StartupsView({
   const fetchStartups = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8080/startups/getStartupList"
+        "https://lce-backend-j2kx.onrender.com/startups/getStartupList"
       );
       if (!response.ok) {
         throw new Error("Failed to fetch startups");
@@ -1045,7 +1055,7 @@ function StartupsView({
   const handleApprove = async (startupId: string) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/startups/approve/${startupId}`,
+        `https://lce-backend-j2kx.onrender.com/startups/approve/${startupId}`,
         {
           method: "PUT",
         }
@@ -1063,7 +1073,7 @@ function StartupsView({
   const handleReject = async (startupId: string) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/startups/reject/${startupId}`,
+        `https://lce-backend-j2kx.onrender.com/startups/reject/${startupId}`,
         {
           method: "DELETE",
         }

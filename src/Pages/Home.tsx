@@ -445,13 +445,6 @@ const Home: React.FC = () => {
                 Leveraging Knowledge, Expertise, Advice, and Confidence in Tech
                 Talent Acquisition through LCE
               </p>
-              <a
-                href="#"
-                className="text-blue-600 font-medium inline-flex items-center hover:underline"
-              >
-                View all testimonials
-                <ChevronRight className="w-4 h-4 ml-1" />
-              </a>
             </div>
             <div className="space-y-6">
               <TestimonialCard

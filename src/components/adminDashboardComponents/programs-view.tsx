@@ -41,7 +41,9 @@ export function ProgramsView() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch("http://localhost:8080/programs/programs");
+      const response = await fetch(
+        "https://lce-backend-j2kx.onrender.com/programs/programs"
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch programs");
       }
@@ -58,7 +60,7 @@ export function ProgramsView() {
   const handleAddProgram = async (programData: Omit<Program, "id">) => {
     try {
       const response = await fetch(
-        "http://localhost:8080/programs/addProgram",
+        "https://lce-backend-j2kx.onrender.com/programs/addProgram",
         {
           method: "POST",
           headers: {
@@ -83,7 +85,7 @@ export function ProgramsView() {
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/programs/programs/${id}`,
+        `https://lce-backend-j2kx.onrender.com/programs/programs/${id}`,
         {
           method: "PUT",
           headers: {
@@ -105,7 +107,7 @@ export function ProgramsView() {
   const handleDeleteProgram = async (id: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/programs/programs/${id}`,
+        `https://lce-backend-j2kx.onrender.com/programs/programs/${id}`,
         {
           method: "DELETE",
         }

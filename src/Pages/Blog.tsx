@@ -47,7 +47,7 @@ export default function BlogList() {
                         className="w-full h-48 object-cover"
                       />
                     ) : (
-                      <div className="w-full h-48 bg-gradient-to-r from-purple-500 to-indigo-500" />
+                      <div className="w-full h-48 bg-gradient-to-r from-blue-500 to-blue-500" />
                     )}
                     <div className="p-6">
                       <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
@@ -66,7 +66,7 @@ export default function BlogList() {
                           <span>{post.author}</span>
                         </div>
                       </div>
-                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                         {post.title}
                       </h2>
                       <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
@@ -77,7 +77,7 @@ export default function BlogList() {
                           {post.tags?.map((tag: string) => (
                             <span
                               key={tag}
-                              className="px-3 py-1 text-sm text-black dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 rounded-full"
+                              className="px-3 py-1 text-sm text-black dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 rounded-full"
                             >
                               {tag}
                             </span>
@@ -85,7 +85,7 @@ export default function BlogList() {
                         </div>
                       </div>
                       <div className="pt-4">
-                        <Button className="flex w-full justify-center dark:text-purple-400 font-medium">
+                        <Button className="flex w-full justify-center dark:text-blue-400 font-medium">
                           Read more
                           <ArrowRight className="w-4 h-4 ml-2" />
                         </Button>

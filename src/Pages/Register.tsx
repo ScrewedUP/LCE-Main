@@ -225,13 +225,16 @@ export default function Component() {
         password: "tempPass",
       };
 
-      const response = await fetch("http://localhost:8080/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(flattenedData),
-      });
+      const response = await fetch(
+        "https://lce-backend-j2kx.onrender.com/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(flattenedData),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Registration failed");

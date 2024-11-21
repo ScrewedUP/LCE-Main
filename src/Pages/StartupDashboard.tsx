@@ -47,7 +47,7 @@ export default function StartupDashboard() {
     setError(null);
     try {
       const response = await fetch(
-        `http://localhost:8080/startups/getCurrentStartup?email=${encodeURIComponent(
+        `https://lce-backend-j2kx.onrender.com/startups/getCurrentStartup?email=${encodeURIComponent(
           email
         )}`
       );
