@@ -1,4 +1,3 @@
-import CommunityPage from "./CommunityPage.tsx";
 import EventsPage from "./EventsPage.tsx";
 import Home from "./Home.tsx";
 import Portfolio from "./Portfolio.tsx";
@@ -11,7 +10,6 @@ export {
   EventsPage,
   Programs,
   Portfolio,
-  CommunityPage,
   Register,
   Login,
 };
