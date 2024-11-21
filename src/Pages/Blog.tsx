@@ -2,13 +2,14 @@ import { allPosts } from "content-collections";
 import { Link } from "react-router-dom";
 import { Calendar, User, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 export default function BlogList() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-blue-50 dark:from-gray-900 dark:to-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <h1 className="text-5xl font-bold text-gray-900 dark:text-white text-center mb-4">
-          Our Blog
+          Our <span className="text-blue-600">Blog</span>
         </h1>
         <p className="text-xl text-gray-600 dark:text-gray-300 text-center mb-16 max-w-2xl mx-auto">
           Discover insights, strategies, and practical guides for scaling your
@@ -65,16 +66,18 @@ export default function BlogList() {
                         {post.tags?.map((tag) => (
                           <span
                             key={tag}
-                            className="px-3 py-1 text-sm text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 rounded-full"
+                            className="px-3 py-1 text-sm text-black dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 rounded-full"
                           >
                             {tag}
                           </span>
                         ))}
                       </div>
-                      <div className="flex items-center text-purple-600 dark:text-purple-400 font-medium">
+                    </div>
+                    <div className="pt-4">
+                      <Button className="flex w-full justify-center dark:text-purple-400 font-medium">
                         Read more
                         <ArrowRight className="w-4 h-4 ml-2" />
-                      </div>
+                      </Button>
                     </div>
                   </div>
                 </Link>

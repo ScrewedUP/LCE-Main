@@ -1,8 +1,11 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, Search, Filter } from "lucide-react";
+import { Calendar, Search, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/hooks/use-toast";
 import {
   Dialog,
   DialogContent,
@@ -12,7 +15,6 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { toast } from "@/hooks/use-toast";
 
 interface Event {
   id: string;
@@ -25,12 +27,8 @@ interface Event {
 const fetchEvents = async (): Promise<Event[]> => {
   try {
     const response = await fetch("http://localhost:8080/events/getEvents");
-    if (!response.ok) {
-      throw new Error("Failed to fetch events");
-    }
-    const events = await response.json();
-    console.log(events);
-    return events;
+    if (!response.ok) throw new Error("Failed to fetch events");
+    return await response.json();
   } catch (error) {
     console.error("Error fetching events:", error);
     return [];
@@ -44,44 +42,42 @@ const EventCard: React.FC<{ event: Event; onRegister: () => void }> = ({
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
+      month: "short",
       day: "numeric",
+      year: "numeric",
       hour: "numeric",
-      minute: "numeric",
+      minute: "2-digit",
     });
   };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9 }}
       transition={{ duration: 0.5 }}
-      className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+      className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-blue-100"
     >
-      <div className="relative h-48 w-full">
+      {event.posterLink && (
         <img
           src={event.posterLink}
-          alt={event.name}
-          className="w-full h-full object-cover"
+          alt={`${event.name} Poster`}
+          className="w-full h-48 object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-        <h3 className="absolute bottom-4 left-4 text-xl font-bold text-white">
-          {event.name}
-        </h3>
-      </div>
+      )}
       <div className="p-6">
-        <p className="text-gray-600 mb-4 line-clamp-2">{event.description}</p>
-        <div className="flex items-center text-gray-500 mb-4">
-          <Calendar className="w-4 h-4 mr-2 text-indigo-600" />
-          <span className="text-sm">{formatDate(event.date)}</span>
+        <h3 className="text-2xl font-bold mb-2 text-blue-600">{event.name}</h3>
+        <p className="text-gray-600 mb-4">{event.description}</p>
+        <div className="flex items-center text-sm text-gray-500 mb-4">
+          <Calendar className="w-4 h-4 mr-2 text-blue-400" />
+          {formatDate(event.date)}
         </div>
         <Button
-          className="w-full bg-indigo-600 text-white hover:bg-indigo-700 transition-colors duration-300"
+          className="w-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors duration-300"
           onClick={onRegister}
         >
           Register Now
+          <ArrowRight className="w-4 h-4 ml-2" />
         </Button>
       </div>
     </motion.div>
@@ -244,61 +240,52 @@ const Events: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20">
-      {/* Simplified Hero Section */}
-      <section className="py-12 bg-gradient-to-br from-indigo-600 to-purple-600 text-white">
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl sm:text-5xl font-bold mb-4 text-center">
-            Upcoming Events
+    <div className="min-h-screen bg-blue-50 pt-20">
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
+        >
+          <h1 className="text-6xl font-bold text-blue-600 mb-4">
+            Explore the Future
           </h1>
-          <p className="text-xl mb-8 text-center max-w-2xl mx-auto">
-            Join us for inspiring talks, workshops, and networking opportunities
+          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            Join us at the forefront of innovation. Our events bring together
+            visionaries, entrepreneurs, and industry leaders to shape tomorrow's
+            technologies.
           </p>
-          <div className="flex justify-center items-center space-x-4">
-            <div className="relative w-full max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <Input
-                className="pl-10 pr-4 py-2 rounded-full w-full text-black"
-                placeholder="Search events..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <Button className="bg-white text-indigo-600 hover:bg-indigo-100 transition-colors duration-300 rounded-full px-6 py-2">
-              <Filter className="w-4 h-4 mr-2" />
-              Filter
-            </Button>
+          <div className="relative max-w-md mx-auto">
+            <Input
+              className="pl-10 pr-4 py-3 rounded-full border-2 border-blue-200 focus:border-blue-400 transition-colors duration-300"
+              placeholder="Search events..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400" />
           </div>
-        </div>
-      </section>
+        </motion.div>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-4 py-16">
         {loading ? (
           <div className="text-center text-2xl text-gray-600">
             Loading events...
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <AnimatePresence>
+          <AnimatePresence>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredEvents.map((event) => (
-                <motion.div
+                <EventCard
                   key={event.id}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <EventCard
-                    event={event}
-                    onRegister={() => handleRegister(event)}
-                  />
-                </motion.div>
+                  event={event}
+                  onRegister={() => handleRegister(event)}
+                />
               ))}
-            </AnimatePresence>
-          </div>
+            </div>
+          </AnimatePresence>
         )}
       </div>
+
       <RegistrationModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

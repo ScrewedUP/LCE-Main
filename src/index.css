@@ -5,6 +5,9 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  font-family: "Poppins";
+}
 @layer base {
   :root {
     --background: 0 0% 100%;

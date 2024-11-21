@@ -1,13 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import {
-  Rocket,
-  Users,
-  BookOpen,
-  Briefcase,
-  ChevronRight,
-  Check,
-} from "lucide-react";
+import { Zap, Rocket, Lightbulb, Globe, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Program {
@@ -21,54 +14,54 @@ interface Program {
 const programs: Program[] = [
   {
     id: 1,
-    title: "Startup Incubator",
+    title: "Quantum Leap Incubator",
     description:
-      "Turn your innovative ideas into successful businesses with our comprehensive incubation program.",
-    icon: <Rocket className="w-12 h-12 text-indigo-600" />,
+      "Accelerate your startup's growth with cutting-edge quantum computing resources and expert mentorship.",
+    icon: <Zap className="w-12 h-12 text-blue-500" />,
     features: [
-      "Mentorship from industry experts",
-      "Access to funding opportunities",
-      "Co-working space",
-      "Networking events",
+      "Access to quantum computing infrastructure",
+      "Specialized quantum algorithm development",
+      "Industry partnerships with tech giants",
+      "Quantum-focused venture capital connections",
     ],
   },
   {
     id: 2,
-    title: "Accelerator Program",
+    title: "Nanotech Accelerator",
     description:
-      "Supercharge your startup's growth with our intensive accelerator program and incubation support.",
-    icon: <Users className="w-12 h-12 text-green-600" />,
+      "Transform the world of materials science with our nanotechnology-focused accelerator program.",
+    icon: <Rocket className="w-12 h-12 text-green-500" />,
     features: [
-      "Tailored curriculum",
-      "Investor connections",
-      "Product development support",
-      "Market entry strategies",
+      "State-of-the-art nanotech lab access",
+      "Collaboration with leading research institutions",
+      "Rapid prototyping and testing facilities",
+      "Nanotech patent strategy and support",
     ],
   },
   {
     id: 3,
-    title: "Entrepreneurship Workshops",
+    title: "AI Ethics Innovation Lab",
     description:
-      "Enhance your entrepreneurial skills with our hands-on workshops and seminars.",
-    icon: <BookOpen className="w-12 h-12 text-purple-600" />,
+      "Pioneer the future of ethical AI development and implementation in this unique program.",
+    icon: <Lightbulb className="w-12 h-12 text-yellow-500" />,
     features: [
-      "Business model canvas",
-      "Pitch deck creation",
-      "Financial planning",
-      "Marketing strategies",
+      "AI ethics framework development",
+      "Partnerships with policy makers and think tanks",
+      "Ethical AI testing and certification",
+      "AI governance and compliance support",
     ],
   },
   {
     id: 4,
-    title: "Corporate Innovation",
+    title: "Space Tech Frontier",
     description:
-      "Foster innovation within your organization through our tailored corporate programs.",
-    icon: <Briefcase className="w-12 h-12 text-orange-600" />,
+      "Launch your space technology startup into orbit with our comprehensive support program.",
+    icon: <Globe className="w-12 h-12 text-purple-500" />,
     features: [
-      "Innovation workshops",
-      "Intrapreneurship training",
-      "Design thinking sessions",
-      "Startup collaboration opportunities",
+      "Collaboration with space agencies",
+      "Microgravity experiment opportunities",
+      "Space-grade hardware development support",
+      "Astronaut and space expert mentorship",
     ],
   },
 ];
@@ -78,26 +71,23 @@ const ProgramCard: React.FC<{ program: Program }> = ({ program }) => (
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5 }}
-    className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-shadow duration-300"
+    className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-blue-100"
   >
-    <div className="p-6">
-      <div className="flex items-center mb-4">
-        {program.icon}
-        <h3 className="text-2xl font-bold text-gray-800 ml-4">
-          {program.title}
-        </h3>
-      </div>
-      <p className="text-gray-600 mb-4">{program.description}</p>
-      <ul className="space-y-2 mb-6">
+    <div className="p-8">
+      <div className="mb-6">{program.icon}</div>
+      <h3 className="text-2xl font-bold mb-4 text-blue-600">{program.title}</h3>
+      <p className="text-gray-600 mb-6">{program.description}</p>
+      <ul className="space-y-2 mb-8">
         {program.features.map((feature, index) => (
           <li key={index} className="flex items-center text-gray-600">
-            <Check className="w-5 h-5 mr-2 text-green-500" />
+            <ArrowRight className="w-4 h-4 mr-2 text-blue-400" />
             {feature}
           </li>
         ))}
       </ul>
-      <Button className="w-full bg-indigo-600 text-white hover:bg-indigo-700 transition-colors duration-300">
+      <Button className="w-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors duration-300 rounded-full">
         Learn More
+        <ArrowRight className="w-4 h-4 ml-2" />
       </Button>
     </div>
   </motion.div>
@@ -105,66 +95,48 @@ const ProgramCard: React.FC<{ program: Program }> = ({ program }) => (
 
 const Programs: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Hero Section */}
-      <section className="relative pt-24 lg:pt-32 pb-20 lg:pb-32 bg-gradient-to-br from-green-600 to-teal-800 text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
-          <svg
-            className="w-full h-full"
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
-          >
-            {Array.from({ length: 5 }).map((_, i) => (
-              <circle
-                key={i}
-                cx={i * 25}
-                cy={i * 25}
-                r="10"
-                fill="none"
-                stroke="white"
-                strokeWidth="0.5"
-              />
-            ))}
-          </svg>
-        </div>
-        <div className="container mx-auto px-4 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
-          >
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight">
-              Our <span className="text-yellow-400">Programs</span>
-            </h1>
-            <p className="text-xl sm:text-2xl md:text-3xl mb-8 max-w-3xl mx-auto">
-              Empowering entrepreneurs at every stage of their journey
-            </p>
-            <Button className="bg-white text-green-600 hover:bg-green-50 transition-colors duration-300 rounded-full px-8 py-3 text-lg font-semibold">
-              Explore Programs
-              <ChevronRight className="w-5 h-5 ml-2" />
-            </Button>
-          </motion.div>
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-gray-100 to-transparent"></div>
-      </section>
+    <div className="min-h-screen bg-blue-50 pt-20">
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
+        >
+          <h1 className="text-6xl font-bold text-blue-600 mb-4">
+            <span className="text-black">Pioneering</span> Programs
+          </h1>
+          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            Embark on a journey to the frontiers of innovation. Our cutting-edge
+            programs are designed to propel your ideas into the technologies of
+            tomorrow.
+          </p>
+        </motion.div>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">
-          Discover Our Programs
-        </h2>
         <div className="grid md:grid-cols-2 gap-8">
           {programs.map((program) => (
             <ProgramCard key={program.id} program={program} />
           ))}
         </div>
-        <div className="text-center mt-12">
-          <Button className="bg-green-600 text-white hover:bg-green-700 transition-colors duration-300 rounded-full px-8 py-3">
-            View All Programs
-            <ChevronRight className="w-5  h-5 ml-2" />
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+          className="mt-16 text-center"
+        >
+          <h2 className="text-4xl font-bold text-blue-600 mb-4">
+            Ready to Shape the Future?
+          </h2>
+          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            Join our next cohort of visionary entrepreneurs and be at the
+            forefront of technological breakthroughs.
+          </p>
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-300 text-lg px-8 py-3 rounded-full">
+            Apply Now
+            <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

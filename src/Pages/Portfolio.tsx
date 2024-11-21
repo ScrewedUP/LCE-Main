@@ -1,100 +1,146 @@
+"use client";
+
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ExternalLink, ChevronRight } from "lucide-react";
+import {
+  ExternalLink,
+  X,
+  ArrowRight,
+  Zap,
+  Users,
+  TrendingUp,
+  Globe,
+  Rocket,
+  Brain,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 interface Startup {
   id: number;
   name: string;
-  icon: string;
+  icon: React.ElementType;
   description: string;
   website: string;
   category: string;
+  impact: string;
+  team: number;
+  growth: string;
 }
 
 const startups: Startup[] = [
   {
     id: 1,
-    name: "TechInnovate",
-    icon: "🚀",
+    name: "QuantumLeap AI",
+    icon: Brain,
     description:
-      "AI-powered customer service platform revolutionizing support interactions.",
-    website: "https://techinnovate.com",
-    category: "AI & Machine Learning",
+      "Revolutionizing drug discovery with quantum computing and AI.",
+    website: "https://quantumleapai.com",
+    category: "HealthTech",
+    impact: "50+ potential drug candidates identified",
+    team: 30,
+    growth: "300% YoY",
   },
   {
     id: 2,
-    name: "GreenGrow",
-    icon: "🌱",
+    name: "NanoHarvest",
+    icon: Zap,
     description:
-      "Sustainable urban farming solutions for a greener future and support interactions.",
-    website: "https://greengrow.com",
-    category: "Sustainability",
+      "Enhancing crop yields through nanotechnology-based solutions.",
+    website: "https://nanoharvest.com",
+    category: "AgTech",
+    impact: "40% increase in crop yields",
+    team: 25,
+    growth: "250% YoY",
   },
   {
     id: 3,
-    name: "HealthHub",
-    icon: "🏥",
-    description:
-      "Telemedicine app connecting rural areas with quality healthcare.",
-    website: "https://healthhub.com",
-    category: "Healthcare",
+    name: "EthicAI",
+    icon: Users,
+    description: "Developing ethical AI frameworks for responsible innovation.",
+    website: "https://ethicai.com",
+    category: "AI Ethics",
+    impact: "Adopted by 100+ tech companies",
+    team: 20,
+    growth: "400% YoY",
   },
   {
     id: 4,
-    name: "EduTech",
-    icon: "📚",
-    description:
-      "Personalized learning platform using AI to adapt to student needs.",
-    website: "https://edutech.com",
-    category: "Education",
+    name: "OrbitalEnergy",
+    icon: Globe,
+    description: "Harnessing solar energy from space for sustainable power.",
+    website: "https://orbitalenergy.com",
+    category: "CleanTech",
+    impact: "1 GW of clean energy transmitted",
+    team: 40,
+    growth: "350% YoY",
   },
   {
     id: 5,
-    name: "FinFlow",
-    icon: "💰",
+    name: "NeuroLink",
+    icon: Brain,
     description:
-      "Blockchain-based financial services for seamless transactions and a decentralized platform.",
-    website: "https://finflow.com",
-    category: "FinTech",
+      "Advancing brain-computer interfaces for medical applications.",
+    website: "https://neurolink.com",
+    category: "BioTech",
+    impact: "Successful trials in 500+ patients",
+    team: 35,
+    growth: "275% YoY",
   },
   {
     id: 6,
-    name: "EcoTravel",
-    icon: "🌍",
+    name: "HoloArch",
+    icon: Rocket,
     description:
-      "Sustainable travel planning app for eco-conscious adventurers.",
-    website: "https://ecotravel.com",
-    category: "Travel & Tourism",
+      "Transforming architecture with advanced holographic technology.",
+    website: "https://holoarch.com",
+    category: "AR/VR",
+    impact: "Used in 1000+ building designs",
+    team: 28,
+    growth: "320% YoY",
   },
 ];
 
 const StartupCard: React.FC<{ startup: Startup; onClick: () => void }> = ({
   startup,
   onClick,
-}) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.9 }}
-    animate={{ opacity: 1, scale: 1 }}
-    transition={{ duration: 0.5 }}
-    className="bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300 border border-gray-200"
-    onClick={onClick}
-  >
-    <div className="p-6">
-      <div className="flex justify-between items-start mb-4">
-        <div className="text-4xl mb-2">{startup.icon}</div>
-        <span className="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs font-semibold rounded-full">
+}) => {
+  const Icon = startup.icon;
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5 }}
+      className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer border border-blue-100"
+      onClick={onClick}
+    >
+      <div className="p-8">
+        <Icon className="w-16 h-16 mb-6 text-blue-600" />
+        <Badge className="mb-4" variant="outline">
           {startup.category}
-        </span>
+        </Badge>
+        <h3 className="text-2xl font-bold mb-2 text-blue-600">
+          {startup.name}
+        </h3>
+        <p className="text-gray-600 mb-6">{startup.description}</p>
+        <div className="flex items-center justify-between text-sm text-gray-500">
+          <span className="flex items-center">
+            <Zap className="w-4 h-4 mr-1 text-yellow-500" />
+            Impact
+          </span>
+          <span className="flex items-center">
+            <Users className="w-4 h-4 mr-1 text-blue-500" />
+            Team
+          </span>
+          <span className="flex items-center">
+            <TrendingUp className="w-4 h-4 mr-1 text-green-500" />
+            Growth
+          </span>
+        </div>
       </div>
-      <h3 className="text-xl font-bold mb-2 text-gray-800">{startup.name}</h3>
-      <p className="text-gray-600 text-sm mb-4">{startup.description}</p>
-      <Button className="w-full bg-indigo-600 text-white hover:bg-indigo-700 transition-colors duration-300">
-        Learn More
-      </Button>
-    </div>
-  </motion.div>
-);
+    </motion.div>
+  );
+};
 
 const Modal: React.FC<{
   isOpen: boolean;
@@ -114,40 +160,53 @@ const Modal: React.FC<{
           initial={{ scale: 0.9, y: 20 }}
           animate={{ scale: 1, y: 0 }}
           exit={{ scale: 0.9, y: 20 }}
-          className="bg-white rounded-lg p-8 max-w-md w-full"
+          className="bg-white rounded-3xl p-8 max-w-2xl w-full"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-3xl font-bold text-gray-800">{startup.name}</h2>
+            <startup.icon className="w-20 h-20 text-blue-600" />
             <button
               onClick={onClose}
               className="text-gray-500 hover:text-gray-700"
+              aria-label="Close modal"
             >
               <X className="w-6 h-6" />
             </button>
           </div>
-          <div className="text-6xl mb-6">{startup.icon}</div>
-          <p className="text-gray-600 mb-6">{startup.description}</p>
-          <div className="mb-6">
-            <span className="px-3 py-1 bg-indigo-100 text-indigo-800 text-sm font-semibold rounded-full">
-              {startup.category}
-            </span>
+          <h2 className="text-4xl font-bold mb-2 text-blue-600">
+            {startup.name}
+          </h2>
+          <Badge className="mb-4" variant="outline">
+            {startup.category}
+          </Badge>
+          <p className="text-xl text-gray-600 mb-6">{startup.description}</p>
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="text-center">
+              <p className="text-sm text-gray-500 mb-1">Impact</p>
+              <p className="text-lg font-bold text-blue-600">
+                {startup.impact}
+              </p>
+            </div>
+            <div className="text-center">
+              <p className="text-sm text-gray-500 mb-1">Team Size</p>
+              <p className="text-lg font-bold text-blue-600">{startup.team}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-sm text-gray-500 mb-1">Growth</p>
+              <p className="text-lg font-bold text-blue-600">
+                {startup.growth}
+              </p>
+            </div>
           </div>
           <a
             href={startup.website}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center text-indigo-600 hover:underline mb-6"
+            className="inline-flex items-center text-blue-600 hover:underline text-lg"
           >
             Visit Website
-            <ExternalLink className="w-4 h-4 ml-2" />
+            <ExternalLink className="w-5 h-5 ml-2" />
           </a>
-          <Button
-            className="w-full bg-indigo-600 text-white hover:bg-indigo-700 transition-colors duration-300"
-            onClick={onClose}
-          >
-            Close
-          </Button>
         </motion.div>
       </motion.div>
     )}
@@ -158,51 +217,23 @@ const Portfolio: React.FC = () => {
   const [selectedStartup, setSelectedStartup] = useState<Startup | null>(null);
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Hero Section */}
-      <section className="relative pt-24 lg:pt-32 pb-20 lg:pb-32 bg-gradient-to-br from-indigo-800 to-red-800 text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
-          <svg
-            className="w-full h-full"
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
-          >
-            {Array.from({ length: 10 }).map((_, i) => (
-              <polygon
-                key={i}
-                points={`${i * 10},100 ${i * 10 + 5},0 ${i * 10 + 10},100`}
-                fill="white"
-              />
-            ))}
-          </svg>
-        </div>
-        <div className="container mx-auto px-4 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
-          >
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight">
-              Our <span className="text-yellow-400">Portfolio</span>
-            </h1>
-            <p className="text-xl sm:text-2xl md:text-3xl mb-8 max-w-3xl mx-auto">
-              Discover the innovative startups shaping the future with LCE
-            </p>
-            <Button className="bg-white text-orange-600 hover:bg-orange-50 transition-colors duration-300 rounded-full px-8 py-3 text-lg font-semibold">
-              Explore Startups
-              <ChevronRight className="w-5 h-5 ml-2" />
-            </Button>
-          </motion.div>
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-gray-100 to-transparent"></div>
-      </section>
+    <div className="min-h-screen bg-blue-50 pt-20">
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
+        >
+          <h1 className="text-6xl font-bold text-blue-600 mb-4">
+            Innovators <span className="text-black">of Tomorrow</span>
+          </h1>
+          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            Discover the groundbreaking startups shaping the future of
+            technology and solving global challenges through innovation.
+          </p>
+        </motion.div>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">
-          Featured Startups
-        </h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {startups.map((startup) => (
             <StartupCard
@@ -212,12 +243,26 @@ const Portfolio: React.FC = () => {
             />
           ))}
         </div>
-        <div className="text-center mt-12">
-          <Button className="bg-orange-600 text-white hover:bg-orange-700 transition-colors duration-300 rounded-full px-8 py-3">
-            View All Startups
-            <ChevronRight className="w-5 h-5 ml-2" />
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+          className="mt-16 text-center"
+        >
+          <h2 className="text-4xl font-bold text-blue-600 mb-4">
+            Be Part of the Future
+          </h2>
+          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            Are you ready to join the ranks of these visionary startups? Apply
+            now to our accelerator program and turn your groundbreaking idea
+            into reality.
+          </p>
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-300 text-lg px-8 py-3 rounded-full">
+            Apply Now
+            <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
-        </div>
+        </motion.div>
       </div>
       <Modal
         isOpen={!!selectedStartup}

@@ -56,17 +56,17 @@ const Navbar = () => {
         },
         {
           title: "What do we offer",
-          href: "/offer",
+          href: "/aboutus",
           icon: <BookOpen className="w-4 h-4 mr-2" />,
         },
         {
           title: "Alumni",
-          href: "/alumni",
+          href: "/aboutus",
           icon: <Users className="w-4 h-4 mr-2" />,
         },
         {
           title: "Team",
-          href: "/team",
+          href: "/aboutus",
           icon: <Users className="w-4 h-4 mr-2" />,
         },
       ],
@@ -81,14 +81,10 @@ const Navbar = () => {
           href: "/events",
           icon: <Calendar className="w-4 h-4 mr-2" />,
         },
-        {
-          title: "Past Events",
-          href: "/events/past",
-          icon: <Calendar className="w-4 h-4 mr-2" />,
-        },
+
         {
           title: "Workshops",
-          href: "/events/workshops",
+          href: "/events",
           icon: <Users className="w-4 h-4 mr-2" />,
         },
       ],

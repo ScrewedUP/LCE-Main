@@ -18,7 +18,6 @@ module.exports = {
     },
     extend: {
       colors: {
-        blue: "#0268AE",
         outlinedButtoncolor: "#E06008",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
