@@ -1,7 +1,15 @@
-import * as React from "react";
 import { useAuth } from "@/auth/AuthProvider";
 import { useNavigate } from "react-router-dom";
-import { Building2, FileText, Calendar, LogOut, LayoutDashboard, Briefcase, BarChart3, GraduationCap, Users, X } from 'lucide-react';
+import {
+  Building2,
+  Calendar,
+  LogOut,
+  LayoutDashboard,
+  Briefcase,
+  BarChart3,
+  GraduationCap,
+  X,
+} from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,7 +48,11 @@ export function AppSidebar({
   };
 
   return (
-    <Sidebar className={`${isOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}>
+    <Sidebar
+      className={`${
+        isOpen ? "translate-x-0" : "-translate-x-full"
+      } lg:translate-x-0`}
+    >
       <SidebarHeader>
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center space-x-2">
@@ -135,4 +147,3 @@ export function AppSidebar({
     </Sidebar>
   );
 }
-

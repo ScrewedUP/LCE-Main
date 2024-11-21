@@ -1,14 +1,21 @@
-import * as React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 const data = [
-  { name: 'Jan', value: 4 },
-  { name: 'Feb', value: 3 },
-  { name: 'Mar', value: 2 },
-  { name: 'Apr', value: 7 },
-  { name: 'May', value: 5 },
-  { name: 'Jun', value: 8 },
+  { name: "Jan", value: 4 },
+  { name: "Feb", value: 3 },
+  { name: "Mar", value: 2 },
+  { name: "Apr", value: 7 },
+  { name: "May", value: 5 },
+  { name: "Jun", value: 8 },
 ];
 
 export function AnalyticsView() {
@@ -55,4 +62,3 @@ function MetricCard({ title, value }: { title: string; value: string }) {
     </Card>
   );
 }
-
