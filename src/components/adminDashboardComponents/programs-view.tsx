@@ -1,11 +1,5 @@
 import * as React from "react";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -205,7 +199,7 @@ function ProgramCard({
                       Make changes to the program details below.
                     </DialogDescription>
                   </DialogHeader>
-                  <ProgramForm onSubmit={onEdit} initialData={program} />
+                  <ProgramForm onSubmit={onEdit} />
                 </DialogContent>
               </Dialog>
               <DropdownMenuItem onClick={onDelete} className="text-red-600">
@@ -232,10 +226,8 @@ function ProgramCard({
 
 function ProgramForm({
   onSubmit,
-  initialData,
 }: {
   onSubmit: (data: Omit<Program, "id">) => void;
-  initialData?: Program;
 }) {
   const [formData, setFormData] = React.useState<Omit<Program, "id">>({
     title: "",

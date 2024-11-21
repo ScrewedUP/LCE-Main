@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useAuth } from "@/auth/AuthProvider";
-import { useNavigate } from "react-router-dom";
 import { AppSidebar } from "@/components/app-sidebar";
 import { ProfileSection } from "@/components/profile-section";
 import { ReportsSection } from "@/components/reports-section";
@@ -31,7 +30,6 @@ export type StartupProfile = {
 
 export default function StartupDashboard() {
   const { email } = useAuth();
-  const navigate = useNavigate();
   const [activeSection, setActiveSection] = React.useState("profile");
   const [startup, setStartup] = React.useState<StartupProfile | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
